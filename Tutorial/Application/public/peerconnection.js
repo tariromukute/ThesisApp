@@ -1,4 +1,7 @@
-var connection = new WebSocket('ws://localhost:9090'); 
+//var express = require('express');
+//var ws = require("nodejs-websocket");
+//var connection = ws.connect("ws://localhost:8080/");
+var connection = new WebSocket('ws://localhost:8081'); 
 var name = ""; 
  
 var loginInput = document.querySelector('#loginInput'); 
@@ -10,11 +13,11 @@ var connectedUser, myConnection;
 //when a user clicks the login button 
 loginBtn.addEventListener("click", function(event){ 
    name = loginInput.value; 
-	
+	      console.log("Login button clicked");
    if(name.length > 0){ 
       send({ 
          type: "login", 
-         name: name 
+         username: name 
       }); 
    } 
 	
@@ -38,6 +41,8 @@ connection.onmessage = function (message) {
       case "candidate": 
          onCandidate(data.candidate); 
          break; 
+      case "test":
+	 console.log("Success full test");
       default: 
          break; 
    } 
@@ -85,8 +90,64 @@ connection.onerror = function (err) {
 function send(message) { 
 
    if (connectedUser) { 
-      message.name = connectedUser; 
+      message.name = "test";//connectedUser; 
    } 
 	
    connection.send(JSON.stringify(message)); 
 };
+
+
+
+//setup a peer connection with another user 
+connectToOtherUsernameBtn.addEventListener("click", function () { 
+ 
+   var otherUsername = otherUsernameInput.value; 
+   connectedUser = otherUsername;
+	
+   if (otherUsername.length > 0) { 
+      //make an offer 
+      myConnection.createOffer(function (offer) { 
+   	 console.log("Sending Offer....");
+         console.log(); 
+         send({ 
+            type: "offer", 
+            offer: offer 
+         });
+			
+         myConnection.setLocalDescription(offer); 
+      }, function (error) { 
+         alert("An error has occurred."); 
+      }); 
+   } 
+});
+
+//when somebody wants to call us 
+function onOffer(offer, name) {
+   console.log("Offer has been received"); 
+   connectedUser = name; 
+   myConnection.setRemoteDescription(new RTCSessionDescription(offer)); 
+	
+   myConnection.createAnswer(function (answer) { 
+      myConnection.setLocalDescription(answer); 
+		
+      send({ 
+         type: "answer", 
+         answer: answer 
+      }); 
+		
+   }, function (error) { 
+      alert("oops...error"); 
+   }); 
+}
+  
+//when another user answers to our offer 
+function onAnswer(answer) { 
+   console.log("Offer has been answered");
+   myConnection.setRemoteDescription(new RTCSessionDescription(answer)); 
+} 
+ 
+//when we got ice candidate from another user 
+function onCandidate(candidate) { 
+   console.log("Ice candidate Received");
+   myConnection.addIceCandidate(new RTCIceCandidate(candidate)); 
+}	

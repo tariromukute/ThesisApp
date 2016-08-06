@@ -14,6 +14,7 @@ wss.broadcast = function (data) {
 };
 
 /** successful connection */
+
 wss.on('connection', function (ws) {
   /** incomming message */
   ws.on('message', function (message) {
