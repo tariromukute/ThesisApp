@@ -6,7 +6,7 @@
    </head>
 	
    <body> 
-      <video autoplay src =""></video> 
+      <video autoplay></video> 
       <div><button id = "btnGetAudioTracks">getAudioTracks()
          </button></div> 
       <div><button id = "btnGetTrackById">getTrackById()

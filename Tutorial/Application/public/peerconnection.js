@@ -1,7 +1,34 @@
-//var express = require('express');
-//var ws = require("nodejs-websocket");
-//var connection = ws.connect("ws://localhost:8080/");
-var connection = new WebSocket('ws://localhost:8081'); 
+
+var stream;
+var video;
+  
+function hasUserMedia() { 
+   //check if the browser supports the WebRTC 
+   return !!(navigator.getUserMedia || navigator.webkitGetUserMedia || 
+      navigator.mozGetUserMedia); 
+} 
+ 
+if (hasUserMedia()) {
+   navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia
+      || navigator.mozGetUserMedia; 
+		
+   //enabling video and audio channels 
+   navigator.getUserMedia({ video: true, audio: true }, function (s) { 
+      stream = s; 
+      video = document.querySelector('video'); 
+		
+      //inserting our stream to the video tag     
+      //video.src = window.URL.createObjectURL(stream); 
+   }, function (err) {}); 
+	
+} else { 
+   alert("WebRTC is not supported"); 
+}
+
+
+
+var connection = new WebSocket('ws://localhost:8080');
+
 var name = ""; 
  
 var loginInput = document.querySelector('#loginInput'); 
@@ -17,7 +44,7 @@ loginBtn.addEventListener("click", function(event){
    if(name.length > 0){ 
       send({ 
          type: "login", 
-         username: name 
+         name: name 
       }); 
    } 
 	
@@ -33,7 +60,7 @@ connection.onmessage = function (message) {
          onLogin(data.success); 
          break; 
       case "offer": 
-         onOffer(data.offer, data.name); 
+         onOffer(data.offer, data.from); 
          break; 
       case "answer": 
          onAnswer(data.answer); 
@@ -61,9 +88,10 @@ function onLogin(success) {
       }; 
 		
       myConnection = new webkitRTCPeerConnection(configuration); 
+	myConnection.addStream(stream);
       console.log("RTCPeerConnection object was created"); 
       console.log(myConnection); 
-  
+  	  myConnection.onaddstream = onAddStreamHandler;
       //setup ice handling
       //when the browser finds an ice candidate we send it to another peer 
       myConnection.onicecandidate = function (event) { 
@@ -79,7 +107,7 @@ function onLogin(success) {
 };
   
 connection.onopen = function () { 
-   console.log("Connected"); 
+   console.log("Connected");
 };
   
 connection.onerror = function (err) { 
@@ -90,9 +118,11 @@ connection.onerror = function (err) {
 function send(message) { 
 
    if (connectedUser) { 
-      message.name = "test";//connectedUser; 
+      message.name = connectedUser; 
+		console.log("connectedUser here is : " + connectedUser);
+	console.log("Sending to : " + connectedUser);
    } 
-	
+
    connection.send(JSON.stringify(message)); 
 };
 
@@ -103,7 +133,7 @@ connectToOtherUsernameBtn.addEventListener("click", function () {
  
    var otherUsername = otherUsernameInput.value; 
    connectedUser = otherUsername;
-	
+	console.log("connectedUser has been set to : " + otherUsername);
    if (otherUsername.length > 0) { 
       //make an offer 
       myConnection.createOffer(function (offer) { 
@@ -129,12 +159,12 @@ function onOffer(offer, name) {
 	
    myConnection.createAnswer(function (answer) { 
       myConnection.setLocalDescription(answer); 
-		
+	
       send({ 
          type: "answer", 
          answer: answer 
       }); 
-		
+	console.log("answer has been sent back"); 	
    }, function (error) { 
       alert("oops...error"); 
    }); 
@@ -150,4 +180,9 @@ function onAnswer(answer) {
 function onCandidate(candidate) { 
    console.log("Ice candidate Received");
    myConnection.addIceCandidate(new RTCIceCandidate(candidate)); 
-}	
+}
+
+//for adding stream
+function onAddStreamHandler(evt) {
+  video.src = URL.createObjectURL(evt.stream);
+};	
