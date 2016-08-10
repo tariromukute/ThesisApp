@@ -3,8 +3,8 @@ var express = require('express');
 var app = express();
 var WSS = require('ws').Server;
 
-// Start the server
-var wss = new WSS({ port: 8081 });
+var fs = require("fs");
+var https = require('https');
 
 var path = require('path');
 
@@ -13,11 +13,19 @@ app.set('port', 8080);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Listen for requests
-var server = app.listen(app.get('port'), function() {
-  var port = server.address().port;
-  console.log('Magic happens on port ' + port);
-});
+//should be put in a config file, along with some necessary/security configurations
+var key = fs.readFileSync(path.resolve(__dirname, 'cert/key.pem'));
+var cert = fs.readFileSync(path.resolve(__dirname, 'cert/cert.pem'));
+
+
+var server = https.createServer({
+      key: key,
+      cert: cert
+    }, app).listen(app.get('port'));
+
+var wss = new WSS({server: server});
+
+
 
 
 

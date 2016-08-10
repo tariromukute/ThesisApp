@@ -4,7 +4,7 @@
    </head>
 	
    <body> 
-	
+	<video autoplay src =""></video> 
       <div> 
          <input type = "text" id = "loginInput" /> 
          <button id = "loginBtn">Login</button> 
@@ -14,7 +14,8 @@
          <input type = "text" id = "otherUsernameInput" />
          <button id = "connectToOtherUsernameBtn">Establish connection</button> 
       </div> 
-		
+	
+	    <script src="lib/adapter.js"></script>	
       <script src = "peerconnection.js"></script>
 		
    </body>

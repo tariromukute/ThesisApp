@@ -4,7 +4,7 @@ var app = express();
 var WSS = require('ws').Server;
 
 // Start the server
-var wss = new WSS({ port: 8080 });
+var wss = new WSS({ port: 8081 });
 
 var path = require('path');
 
@@ -14,10 +14,10 @@ app.set('port', 8080);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Listen for requests
-/*var server = app.listen(app.get('port'), function() {
+var server = app.listen(app.get('port'), function() {
   var port = server.address().port;
   console.log('Magic happens on port ' + port);
-});*/
+});
 
 
 

@@ -27,7 +27,7 @@ if (hasUserMedia()) {
 
 
 
-var connection = new WebSocket('ws://localhost:8081');
+var connection = new WebSocket('wss://localhost:8080');
 
 var name = ""; 
  
@@ -87,7 +87,7 @@ function onLogin(success) {
          "iceServers": [{ "url": "stun:stun.1.google.com:19302" }] 
       }; 
 		
-      myConnection = new webkitRTCPeerConnection(configuration); 
+      myConnection = new RTCPeerConnection(configuration); //new webkitRTCPeerConnection(configuration); //| new mozRTCPeerConnection(configuration)]; 
 	myConnection.addStream(stream);
       console.log("RTCPeerConnection object was created"); 
       console.log(myConnection); 
@@ -144,7 +144,14 @@ connectToOtherUsernameBtn.addEventListener("click", function () {
             offer: offer 
          });
 			
-         myConnection.setLocalDescription(offer); 
+         myConnection.setLocalDescription(offer,
+		function() {
+		  console.log("setting local description");
+		}, 
+		function(error) { 
+		  console.log(error);
+		}
+	); 
       }, function (error) { 
          alert("An error has occurred."); 
       }); 
@@ -155,7 +162,14 @@ connectToOtherUsernameBtn.addEventListener("click", function () {
 function onOffer(offer, name) {
    console.log("Offer has been received"); 
    connectedUser = name; 
-   myConnection.setRemoteDescription(new RTCSessionDescription(offer)); 
+   myConnection.setRemoteDescription(new RTCSessionDescription(offer), 
+		function() {
+		  console.log("setting remote description");
+		}, 
+		function(error) { 
+		  console.log(error);
+		}
+	); 
 	
    myConnection.createAnswer(function (answer) { 
       myConnection.setLocalDescription(answer); 
@@ -185,4 +199,7 @@ function onCandidate(candidate) {
 //for adding stream
 function onAddStreamHandler(evt) {
   video.src = URL.createObjectURL(evt.stream);
+  video.onloadedmetadata = function(e) {
+           video.play();
+         };
 };	
