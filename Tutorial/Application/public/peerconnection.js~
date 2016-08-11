@@ -101,6 +101,10 @@ function onLogin(success) {
   	  myConnection.onaddstream = onAddStreamHandler;
       //setup ice handling
       //when the browser finds an ice candidate we send it to another peer 
+	send({
+	  type : "set connection",
+	  data : "success"
+	});
       myConnection.onicecandidate = function (event) { 
 		
          if (event.candidate) { 
@@ -176,8 +180,8 @@ function onOffer(offer, name) {
 		function() {
 		  console.log("setting remote description");
 		  send({
-		    type : "set",
-		    data : "sessiondescrp"
+		    type : "set rmt dscrp",
+		    data : icecandidate
 		  });
 		  remoteSet = true;
 		  if(icecandidate){
@@ -205,12 +209,16 @@ function onOffer(offer, name) {
 //when another user answers to our offer 
 function onAnswer(answer) { 
    console.log("Offer has been answered");
+   send({
+     type : "received",
+     data : "answer"
+   });
    myConnection.setRemoteDescription(new RTCSessionDescription(answer), 
 	function() {
 	  console.log("setting remote description");
 	  send({
-	    type : "set",
-	    data : "sessiondescrp"
+	    type : "set rmt dscrp",
+ 	    data : "dont know"
 	  });
 	  remoteSet = true;
 	  if(icecandidate){
@@ -218,6 +226,10 @@ function onAnswer(answer) {
 	  }
 	}, 
 	function(error) { 
+	  send({
+	    type : "failed rmt dscrp",
+	    data : error
+	  });
 	  console.log(error);
 	}
    ); 
@@ -240,6 +252,10 @@ function onCandidate(candidate) {
 
 function setIceCandidate(){
    console.log("Setting Ice candidate");
+   send({
+     type : "setting Ice",
+     data : remoteSet
+   });
    myConnection.addIceCandidate(new RTCIceCandidate(icecandidate)); 
 }
 //for adding stream

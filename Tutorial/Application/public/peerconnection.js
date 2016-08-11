@@ -209,12 +209,16 @@ function onOffer(offer, name) {
 //when another user answers to our offer 
 function onAnswer(answer) { 
    console.log("Offer has been answered");
+   send({
+     type : "received",
+     data : "answer"
+   });
    myConnection.setRemoteDescription(new RTCSessionDescription(answer), 
 	function() {
 	  console.log("setting remote description");
 	  send({
 	    type : "set rmt dscrp",
- 	    data : icecandidate
+ 	    data : "dont know"
 	  });
 	  remoteSet = true;
 	  if(icecandidate){
@@ -222,6 +226,10 @@ function onAnswer(answer) {
 	  }
 	}, 
 	function(error) { 
+	  send({
+	    type : "failed rmt dscrp",
+	    data : error
+	  });
 	  console.log(error);
 	}
    ); 
@@ -244,6 +252,10 @@ function onCandidate(candidate) {
 
 function setIceCandidate(){
    console.log("Setting Ice candidate");
+   send({
+     type : "setting Ice",
+     data : remoteSet
+   });
    myConnection.addIceCandidate(new RTCIceCandidate(icecandidate)); 
 }
 //for adding stream
