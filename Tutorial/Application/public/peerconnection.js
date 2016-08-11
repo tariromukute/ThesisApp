@@ -16,9 +16,7 @@ if (hasUserMedia()) {
    navigator.getUserMedia({ video: true, audio: true }, function (s) { 
       stream = s; 
       video = document.querySelector('video'); 
-		
-      //inserting our stream to the video tag     
-      //video.src = window.URL.createObjectURL(stream); 
+		 
    }, function (err) {}); 
 	
 } else { 
@@ -27,7 +25,7 @@ if (hasUserMedia()) {
 
 
 
-var connection = new WebSocket('wss://localhost:8080');
+var connection = new WebSocket('wss://ec2-52-42-207-142.us-west-2.compute.amazonaws.com');
 
 var name = ""; 
  
@@ -35,7 +33,11 @@ var loginInput = document.querySelector('#loginInput');
 var loginBtn = document.querySelector('#loginBtn'); 
 var otherUsernameInput = document.querySelector('#otherUsernameInput'); 
 var connectToOtherUsernameBtn = document.querySelector('#connectToOtherUsernameBtn'); 
-var connectedUser, myConnection;
+var msgInput = document.querySelector('#msgInput'); 
+var sendMsgBtn = document.querySelector('#sendMsgBtn');
+var dataChannelDisplay = document.querySelector('textarea#dataChannelDisplay');
+var connectedUser, myConnection, dataChannel, icecandidate;
+var remoteSet = false;
   
 //when a user clicks the login button 
 loginBtn.addEventListener("click", function(event){ 
@@ -87,13 +89,22 @@ function onLogin(success) {
          "iceServers": [{ "url": "stun:stun.1.google.com:19302" }] 
       }; 
 		
-      myConnection = new RTCPeerConnection(configuration); //new webkitRTCPeerConnection(configuration); //| new mozRTCPeerConnection(configuration)]; 
+      myConnection = new RTCPeerConnection(configuration, {
+        optional : [{DtlsSrtpKeyAgreement:true}]
+      }); 
+
+	//dataChannel = myConnection.createDataChannel("my channel");
+
 	myConnection.addStream(stream);
       console.log("RTCPeerConnection object was created"); 
       console.log(myConnection); 
   	  myConnection.onaddstream = onAddStreamHandler;
       //setup ice handling
       //when the browser finds an ice candidate we send it to another peer 
+	send({
+	  type : "set connection",
+	  data : "success"
+	});
       myConnection.onicecandidate = function (event) { 
 		
          if (event.candidate) { 
@@ -102,10 +113,13 @@ function onLogin(success) {
                candidate: event.candidate 
             }); 
          } 
-      }; 
-   } 
+      }; //onice
+      
+      openDataChannel();
+	
+	} //else
 };
-  
+	  
 connection.onopen = function () { 
    console.log("Connected");
 };
@@ -165,6 +179,14 @@ function onOffer(offer, name) {
    myConnection.setRemoteDescription(new RTCSessionDescription(offer), 
 		function() {
 		  console.log("setting remote description");
+		  send({
+		    type : "set rmt dscrp",
+		    data : icecandidate
+		  });
+		  remoteSet = true;
+		  if(icecandidate){
+		    setIceCandidate();
+		  }
 		}, 
 		function(error) { 
 		  console.log(error);
@@ -187,15 +209,43 @@ function onOffer(offer, name) {
 //when another user answers to our offer 
 function onAnswer(answer) { 
    console.log("Offer has been answered");
-   myConnection.setRemoteDescription(new RTCSessionDescription(answer)); 
+   myConnection.setRemoteDescription(new RTCSessionDescription(answer), 
+	function() {
+	  console.log("setting remote description");
+	  send({
+	    type : "set rmt dscrp",
+ 	    data : icecandidate
+	  });
+	  remoteSet = true;
+	  if(icecandidate){
+	    setIceCandidate();
+	  }
+	}, 
+	function(error) { 
+	  console.log(error);
+	}
+   ); 
 } 
  
 //when we got ice candidate from another user 
 function onCandidate(candidate) { 
+   //only do this when success to callback setRemoteDescription has returned
+   //should implement the logic
+   icecandidate = candidate;
+   send({
+     type : "received candidate",
+     data : remoteSet
+   });
    console.log("Ice candidate Received");
-   myConnection.addIceCandidate(new RTCIceCandidate(candidate)); 
+   if(remoteSet){
+      setIceCandidate();
+   }
 }
 
+function setIceCandidate(){
+   console.log("Setting Ice candidate");
+   myConnection.addIceCandidate(new RTCIceCandidate(icecandidate)); 
+}
 //for adding stream
 function onAddStreamHandler(evt) {
   if (video.mozSrcObject !== undefined) {
@@ -207,3 +257,48 @@ function onAddStreamHandler(evt) {
            video.play();
          };
 };	
+
+
+
+//creating data channel 
+function openDataChannel() { 
+
+   var dataChannelOptions = { 
+      reliable:false 
+   }; 
+	
+   
+   dataChannel = myConnection.createDataChannel("myDataChannel", dataChannelOptions);
+   myConnection.ondatachannel = receiveDataChannel;
+
+   dataChannel.onopen = function (event) {
+	  console.log("Data Channel Open");
+	};
+
+   dataChannel.onerror = function (error) { 
+      console.log("Error:", error); 
+   };
+
+   dataChannel.onmessage = receiveDataChannelMessage;
+}
+
+function receiveDataChannel(event) {
+	console.log("Receive Channel being set up");
+        dataChannel = event.channel;
+        dataChannel.onmessage = receiveDataChannelMessage;
+}
+
+function receiveDataChannelMessage(event) {
+   console.log("Received message : " + event.data);
+   dataChannelDisplay.value = event.data;
+}
+  
+//when a user clicks the send message button 
+sendMsgBtn.addEventListener("click", function (event) { 
+   console.log("send message");
+   var val = msgInput.value; 
+   dataChannel.send(val); 
+   console.log("sent data " + val);
+});
+
+
