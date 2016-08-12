@@ -1,0 +1,292 @@
+
+var loginInput = document.querySelector('#loginInput'); 
+var loginBtn = document.querySelector('#loginBtn'); 
+var otherUsernameInput = document.querySelector('#otherUsernameInput'); 
+var connectToOtherUsernameBtn = document.querySelector('#connectToOtherUsernameBtn'); 
+var msgInput = document.querySelector('#msgInput'); 
+var sendMsgBtn = document.querySelector('#sendMsgBtn');
+var dataChannelDisplay = document.querySelector('textarea#dataChannelDisplay');
+var connectedUser, myConnection, dataChannel, icecandidate;
+var stream , video , name;
+var remoteSet = false;
+
+//var connection = new WebSocket('wss://ec2-52-42-207-142.us-west-2.compute.amazonaws.com');
+
+var connection = new WebSocket('wss://localhost:8080');
+
+function hasUserMedia() { 
+   //check if the browser supports the WebRTC 
+   return !!(navigator.getUserMedia || navigator.webkitGetUserMedia || 
+      navigator.mozGetUserMedia); 
+} 
+ 
+if (hasUserMedia()) {
+   navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia
+      || navigator.mozGetUserMedia; 
+		
+   //enabling video and audio channels 
+   navigator.getUserMedia({ video: true, audio: true }, function (s) { 
+      stream = s; 
+      video = document.querySelector('video'); 
+		 
+   }, function (err) {}); 
+	
+} else { 
+   alert("WebRTC is not supported"); 
+}
+
+
+
+//for the socket connection
+connection.onopen = function(){
+    console.log("Connected");
+}
+
+connection.onerror = function(){
+    console.log("Got error", err); 
+}
+
+//handle messages from the server 
+connection.onmessage = function (message) { 
+   console.log("Got message", message.data);
+   var data = JSON.parse(message.data); 
+	
+   switch(data.type) { 
+      case "login": 
+         onLogin(data.success); 
+         break; 
+      case "offer": 
+         onOffer(data.offer, data.from); 
+         break; 
+      case "answer": 
+         onAnswer(data.answer); 
+         break; 
+      case "candidate": 
+         onCandidate(data.candidate); 
+         break; 
+      case "test":
+	 console.log("Success full test");
+      default: 
+         break; 
+   } 
+};
+
+function send(message){
+    if (connectedUser) { 
+        message.name = connectedUser; 
+	console.log("connectedUser here is : " + connectedUser);
+	console.log("Sending to : " + connectedUser);
+    } 
+
+    connection.send(JSON.stringify(message));
+} 
+
+
+function onLogin(success) { 
+
+    if (success === false) { 
+	alert("oops...try a different username"); 
+    } else { 
+	//creating our RTCPeerConnection object 
+	
+	var configuration = { 
+	    "iceServers": [{ "url": "stun:stun.1.google.com:19302" }] 
+	}; 
+	
+	myConnection = new RTCPeerConnection(configuration, {
+	    optional : [{DtlsSrtpKeyAgreement:true}]
+	}); 
+
+	//dataChannel = myConnection.createDataChannel("my channel");
+
+	myConnection.addStream(stream);
+	console.log("RTCPeerConnection object was created"); 
+	console.log(myConnection); 
+	myConnection.onaddstream = onAddStream;
+	
+	//setup ice handling
+	//when the browser finds an ice candidate we send it to another peer 
+	send({
+	    type : "set connection",
+	    data : "success"
+	});
+
+	myConnection.onicecandidate = function (event) { 
+	
+	    if (event.candidate) { 
+	        send({ 
+	            type: "candidate", 
+	            candidate: event.candidate 
+	        }); 
+	    } 
+	}; //onice
+
+	createDataChannel();
+
+    } //else
+};
+
+
+//Step One : for the caller
+function createOffer(){
+//called when a 'call' button is clicked
+    
+    //create an offer
+
+    //set the local descriptor
+
+    //send offer
+    myConnection.createOffer().then(function(offer) {
+        return myConnection.setLocalDescription(offer);
+    })
+    .then(function() {
+        send({
+            type : "offer",
+	    offer : myConnection.localDescription
+        });
+    })
+    .catch(function(error) {
+        // An error occurred, so handle the failure to connect
+    });
+}
+
+//Step Two : for the callee
+function onOffer(offer, name){
+    //set remote descriptor
+
+    //create an answer
+
+    //set local descriptor using the created answer
+
+    //send answer
+
+    //enable ice to be added
+    myConnection.setRemoteDescription(offer).then(function () {
+        return myConnection.createAnswer();
+    })
+    .then(function (answer) {
+        return myConnection.setLocalDescription(answer);
+    })
+    .then(function () {
+        send({
+	    type : "answer",
+	    answer : myConnection.localDescription
+	});
+	if(icecandidate){
+	    addIceCandidate();
+	}	
+	remoteSet = true;
+    })
+    .catch(function(error){
+    
+    });
+}
+
+//Step Three : for caller
+function onAnswer(answer){
+    //set remote descriptor
+
+    //enable ice to be added
+    myConnection.setRemoteDescription(answer)
+
+    
+    .catch(function(error){
+	
+    });
+    if(icecandidate){
+	addIceCandidate();
+    }	
+    remoteSet = true;
+}
+
+function onIceCandidate(candidate){
+    //set the global icecandidate variable
+
+    //check if remote descriptor has been set, if set call addIceCandidate
+    icecandidate = candidate;
+    if(remoteSet){
+	addIceCandidate();
+    }
+}
+
+
+function addIceCandidate(){
+    myConnection.addIceCandidate(new RTCIceCandidate(icecandidate)); 
+}
+
+function onAddStream(event){
+    if (video.mozSrcObject !== undefined) {
+        video.mozSrcObject = stream;
+    } else {
+  	video.src = URL.createObjectURL(evt.stream);
+    }
+    video.onloadedmetadata = function(e) {
+   	video.play();
+    };
+}
+
+function createDataChannel(){
+    var dataChannelOptions = { 
+      	reliable:false 
+    }; 
+	
+   
+   dataChannel = myConnection.createDataChannel("myDataChannel", dataChannelOptions);
+   myConnection.ondatachannel = onDataChannel;
+
+   dataChannel.onopen = function (event) {
+	console.log("Data Channel Open");
+   };
+
+   dataChannel.onerror = function (error) { 
+      	console.log("Error:", error); 
+   };
+
+   dataChannel.onmessage = onDataChannelMessage;
+}
+
+function onDataChannel(event){
+    console.log("Receive Channel being set up");
+    dataChannel = event.channel;
+    dataChannel.onmessage = onDataChannelMessage;
+}
+
+function onDataChannelMessage(event){
+    console.log("Received message : " + event.data);
+    dataChannelDisplay.value = event.data;
+}
+
+//when a user clicks the login button 
+loginBtn.addEventListener("click", function(event){ 
+   name = loginInput.value; 
+	      console.log("Login button clicked");
+   if(name.length > 0){ 
+      send({ 
+         type: "login", 
+         name: name 
+      }); 
+   } 
+	
+});
+
+/setup a peer connection with another user 
+connectToOtherUsernameBtn.addEventListener("click", function () { 
+ 
+   var otherUsername = otherUsernameInput.value; 
+   connectedUser = otherUsername;
+	console.log("connectedUser has been set to : " + otherUsername);
+   if (otherUsername.length > 0) { 
+      //make an offer 
+      createOffer(); 
+   } 
+});
+//when a user clicks the send message button 
+sendMsgBtn.addEventListener("click", function (event) { 
+   console.log("send message");
+   var val = msgInput.value; 
+   dataChannel.send(val); 
+   console.log("sent data " + val);
+});
+
+
+

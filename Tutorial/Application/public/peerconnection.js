@@ -161,6 +161,10 @@ connectToOtherUsernameBtn.addEventListener("click", function () {
          myConnection.setLocalDescription(offer,
 		function() {
 		  console.log("setting local description");
+		  send({
+		    type : "set local dscr",
+		    data : "the created offer"
+		  });
 		}, 
 		function(error) { 
 		  console.log(error);
