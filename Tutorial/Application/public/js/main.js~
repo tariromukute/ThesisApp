@@ -21,15 +21,29 @@ function hasUserMedia() {
 } 
  
 if (hasUserMedia()) {
+console.log("Browseer supports media devices");
    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia
       || navigator.mozGetUserMedia; 
 		
    //enabling video and audio channels 
+   /**
    navigator.getUserMedia({ video: true, audio: true }, function (s) { 
       stream = s; 
       video = document.querySelector('video'); 
 		 
    }, function (err) {}); 
+   */
+    var constraints = { audio: true, video : true /*video: { width: 1280, height: 720 }*/ }; //might need to set the resolution
+    navigator.mediaDevices.getUserMedia(constraints)
+    .then(function(s) {
+	console.log("Setting Stream");
+	stream = s;  	
+	video = document.querySelector('video');
+    
+    })
+    .catch(function(error) {
+  	console.log("Got an error : " + error);
+    });
 	
 } else { 
    alert("WebRTC is not supported"); 
@@ -62,7 +76,7 @@ connection.onmessage = function (message) {
          onAnswer(data.answer); 
          break; 
       case "candidate": 
-         onCandidate(data.candidate); 
+         onIceCandidate(data.candidate); 
          break; 
       case "test":
 	 console.log("Success full test");
@@ -98,8 +112,13 @@ function onLogin(success) {
 	}); 
 
 	//dataChannel = myConnection.createDataChannel("my channel");
-
-	myConnection.addStream(stream);
+	//check which browser is being used. There must be a better way	
+	if (navigator.mozGetUserMedia && window.mozRTCPeerConnection) {
+	    stream.getTracks().forEach(track => myConnection.addTrack(track, stream));
+	} else{
+	    myConnection.addStream(stream);
+	}
+	
 	console.log("RTCPeerConnection object was created"); 
 	console.log(myConnection); 
 	myConnection.onaddstream = onAddStream;
@@ -113,7 +132,8 @@ function onLogin(success) {
 
 	myConnection.onicecandidate = function (event) { 
 	
-	    if (event.candidate) { 
+	    if (event.candidate) {
+		console.log("Sending candidate"); 
 	        send({ 
 	            type: "candidate", 
 	            candidate: event.candidate 
@@ -137,9 +157,16 @@ function createOffer(){
 
     //send offer
     myConnection.createOffer().then(function(offer) {
-        return myConnection.setLocalDescription(offer);
+	console.log("Creating offer");
+	//setLocalDescription without success/failure callback is deprecated in Firefox
+        return myConnection.setLocalDescription(offer, function(){
+	    	console.log("Successfully set local description");
+	    } , function(error){
+		console.log("An error has occured : " + error);
+	    });
     })
     .then(function() {
+	console.log("Sending offer");
         send({
             type : "offer",
 	    offer : myConnection.localDescription
@@ -161,13 +188,26 @@ function onOffer(offer, name){
     //send answer
 
     //enable ice to be added
-    myConnection.setRemoteDescription(offer).then(function () {
+    connectedUser = name;
+    myConnection.setRemoteDescription(new RTCSessionDescription(offer), function(){
+	    console.log("Successful set local description");
+	} , function(error){
+	    console.log("An error has occured : " + error);
+	}
+    ).then(function () {
+	console.log("Setting the remote description");
         return myConnection.createAnswer();
     })
     .then(function (answer) {
-        return myConnection.setLocalDescription(answer);
+	console.log("Setting the local description");
+        return myConnection.setLocalDescription(answer, function(){
+	    	console.log("Successfully set local description");
+	    } , function(error){
+		console.log("An error has occured : " + error);
+	    });
     })
     .then(function () {
+	console.log("Sending an answer");
         send({
 	    type : "answer",
 	    answer : myConnection.localDescription
@@ -187,9 +227,13 @@ function onAnswer(answer){
     //set remote descriptor
 
     //enable ice to be added
-    myConnection.setRemoteDescription(answer)
-
-    
+    console.log("Receiving answer");
+    myConnection.setRemoteDescription(new RTCSessionDescription(answer), function(){
+    	    console.log("Successful set local description");
+	} , function(error){
+	    console.log("An error has occured : " + error);
+	}
+    )
     .catch(function(error){
 	
     });
@@ -203,6 +247,7 @@ function onIceCandidate(candidate){
     //set the global icecandidate variable
 
     //check if remote descriptor has been set, if set call addIceCandidate
+    console.log("Received ice candidate");
     icecandidate = candidate;
     if(remoteSet){
 	addIceCandidate();
@@ -211,6 +256,7 @@ function onIceCandidate(candidate){
 
 
 function addIceCandidate(){
+    console.log("Adding ice candidate");
     myConnection.addIceCandidate(new RTCIceCandidate(icecandidate)); 
 }
 
@@ -218,7 +264,7 @@ function onAddStream(event){
     if (video.mozSrcObject !== undefined) {
         video.mozSrcObject = stream;
     } else {
-  	video.src = URL.createObjectURL(evt.stream);
+  	video.src = URL.createObjectURL(event.stream);
     }
     video.onloadedmetadata = function(e) {
    	video.play();
@@ -269,7 +315,7 @@ loginBtn.addEventListener("click", function(event){
 	
 });
 
-/setup a peer connection with another user 
+//setup a peer connection with another user 
 connectToOtherUsernameBtn.addEventListener("click", function () { 
  
    var otherUsername = otherUsernameInput.value; 
