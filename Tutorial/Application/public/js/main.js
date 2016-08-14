@@ -6,7 +6,8 @@ var connectToOtherUsernameBtn = document.querySelector('#connectToOtherUsernameB
 var msgInput = document.querySelector('#msgInput'); 
 var sendMsgBtn = document.querySelector('#sendMsgBtn');
 var dataChannelDisplay = document.querySelector('textarea#dataChannelDisplay');
-var connectedUser, myConnection, dataChannel, icecandidate;
+var dataChannelDisplay2 = document.querySelector('textarea#dataChannelDisplay2');
+var connectedUser, myConnection, dataChannel, dataChannel2, icecandidate;
 var stream , video , name;
 var remoteSet = false;
 
@@ -228,10 +229,22 @@ function onAnswer(answer){
 
     //enable ice to be added
     console.log("Receiving answer");
+    send({
+	type : "Received",
+	data : "Answer"
+    });
     myConnection.setRemoteDescription(new RTCSessionDescription(answer), function(){
     	    console.log("Successful set local description");
+	    send({
+		type : "Successful",
+		data : "Remote Descrp for answer"
+	    });
 	} , function(error){
 	    console.log("An error has occured : " + error);
+	    send({
+		type : "Failed",
+		data : error
+	    });
 	}
     )
     .catch(function(error){
@@ -278,6 +291,7 @@ function createDataChannel(){
 	
    
    dataChannel = myConnection.createDataChannel("myDataChannel", dataChannelOptions);
+   dataChannel2 = myConnection.createDataChannel("myDataChannel2", dataChannelOptions);
    myConnection.ondatachannel = onDataChannel;
 
    dataChannel.onopen = function (event) {
@@ -289,17 +303,40 @@ function createDataChannel(){
    };
 
    dataChannel.onmessage = onDataChannelMessage;
+   
+   
+
+   dataChannel2.onopen = function (event) {
+	console.log("Data Channel Open");
+   };
+
+   dataChannel2.onerror = function (error) { 
+      	console.log("Error:", error); 
+   };
+
+   dataChannel2.onmessage = onDataChannelMessage;
 }
 
 function onDataChannel(event){
     console.log("Receive Channel being set up");
-    dataChannel = event.channel;
-    dataChannel.onmessage = onDataChannelMessage;
+    if(event.channel.label == "myDataChannel"){
+    	dataChannel = event.channel;
+	dataChannel.onmessage = onDataChannelMessage;
+    }
+    else if(event.channel.label == "myDataChannel2"){
+	dataChannel2 = event.channel;
+	dataChannel2.onmessage = onDataChannelMessage2;
+    }
 }
 
 function onDataChannelMessage(event){
     console.log("Received message : " + event.data);
     dataChannelDisplay.value = event.data;
+}
+
+function onDataChannelMessage2(event){
+    console.log("Received message : " + event.data);
+    dataChannelDisplay2.value = event.data;
 }
 
 //when a user clicks the login button 
@@ -330,9 +367,16 @@ connectToOtherUsernameBtn.addEventListener("click", function () {
 sendMsgBtn.addEventListener("click", function (event) { 
    console.log("send message");
    var val = msgInput.value; 
-   dataChannel.send(val); 
+   message(val);
    console.log("sent data " + val);
 });
 
+function message(message){
+  dataChannel.send(message); 
+}
+
+function message2(message){
+  dataChannel2.send(message); 
+}
 
 
