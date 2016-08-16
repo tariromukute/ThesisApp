@@ -1,9 +1,10 @@
 
 var gear = document.getElementById("gear"), liveStream = document.getElementById("livestream"), videoholder = document.getElementById("videoholder");
+var container = document.getElementById("container")
 var ratio = window.devicePixelRatio || 1;
 var swidth = window.screen.width * ratio;
 var sheight = window.screen.height * ratio;
-var gearSize = floor(0.1 * sheight);
+var gearSize = Math.floor(0.1 * sheight);
 var videoSize = sheight - gearSize;
 
 size_attributes();
@@ -24,13 +25,15 @@ function init() {
 }
 
 function size_attributes(){
+  container.style.height = sheight;
   gearholder.style.height = gearSize;
   gear.style.height = gearSize - 2;
   videoholder.style.height = videoSize;
+  livestream.style.top = gearSize + 2 ;
 }
 function over_handler(event) { }
 function enter_handler(event) { 
-  event.target.background-color = "red";
+  event.target.style.background = "red";
 }
 function down_handler(event) { }
 function move_handler(event) {
@@ -55,4 +58,4 @@ function changeScreen(){
     cols[i].classList.toggle('hide_element');
   }
 }
-}
+

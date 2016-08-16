@@ -10,9 +10,9 @@ var connectedUser, myConnection, dataChannel, dataChannel2, icecandidate;
 var stream , video , name;
 var remoteSet = false;
 
-var connection = new WebSocket('wss://ec2-52-42-207-142.us-west-2.compute.amazonaws.com');
+//var connection = new WebSocket('wss://ec2-52-42-207-142.us-west-2.compute.amazonaws.com');
 
-//var connection = new WebSocket('wss://localhost:8080');
+var connection = new WebSocket('wss://localhost:8080');
 
 function hasUserMedia() { 
    //check if the browser supports the WebRTC 
@@ -33,12 +33,12 @@ console.log("Browseer supports media devices");
 		 
    }, function (err) {}); 
    */
-    var constraints = { audio: true, msgvideo : true /*video: { width: 1280, height: 720 }*/ }; //might need to set the resolution
+    var constraints = { audio: true, video : true /*video: { width: 1280, height: 720 }*/ }; //might need to set the resolution
     navigator.mediaDevices.getUserMedia(constraints)
     .then(function(s) {
 	console.log("Setting Stream");
 	stream = s;  	
-	video = document.querySelector('video');
+	video = document.querySelector('#livestream');
     
     })
     .catch(function(error) {
@@ -56,8 +56,8 @@ connection.onopen = function(){
     console.log("Connected");
 }
 
-connection.onerror = function(){
-    console.log("Got error", err); 
+connection.onerror = function(error){
+    console.log("Got error ", error); 
 }
 
 //handle messages from the server 
