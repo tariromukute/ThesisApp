@@ -1,8 +1,46 @@
 
-video{
+
+div.gearholder{
+  width : 100%; 
+  /* random initial values, changed on document to suit screen size */
+  height : 2px;
+}
+
+.object-fit_cover{ 
+  object-fit: cover 
+}
+
+div.videoholder{
+  width : 100%; 
+  /* random initial values, changed on document to suit screen size */
+  height : 2px;
+}
+
+video.livestream{
   -moz-transform:rotate(90deg);
   -webkit-transform:rotate(90deg);
   -o-transform:rotate(90deg);
   -ms-transform:rotate(90deg);
   transform:rotate(90deg);
+  /* random initial values, changed on document to suit screen size */
+  height : 2px;
+  width : 2px;
+  visibility : hidden;
+}
+
+#gear{
+  position : relative;
+  color : blue;
+  left : 0;
+  width : 5%;
+  /* random initial values, changed on document to suit screen size */ 
+  height : 2px;
+}
+
+.init_element{
+  visibility : visible;
+}
+
+div.display{
+  position : absolute;
 }

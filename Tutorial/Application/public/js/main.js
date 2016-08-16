@@ -3,10 +3,9 @@ var loginInput = document.querySelector('#loginInput');
 var loginBtn = document.querySelector('#loginBtn'); 
 var otherUsernameInput = document.querySelector('#otherUsernameInput'); 
 var connectToOtherUsernameBtn = document.querySelector('#connectToOtherUsernameBtn'); 
-var msgInput = document.querySelector('#msgInput'); 
-var sendMsgBtn = document.querySelector('#sendMsgBtn');
-var dataChannelDisplay = document.querySelector('textarea#dataChannelDisplay');
-var dataChannelDisplay2 = document.querySelector('textarea#dataChannelDisplay2');
+
+var dataChannelDisplay = document.querySelector('#dataChannelDisplay');
+var dataChannelDisplay2 = document.querySelector('#dataChannelDisplay2');
 var connectedUser, myConnection, dataChannel, dataChannel2, icecandidate;
 var stream , video , name;
 var remoteSet = false;
@@ -34,7 +33,7 @@ console.log("Browseer supports media devices");
 		 
    }, function (err) {}); 
    */
-    var constraints = { audio: true, video : true /*video: { width: 1280, height: 720 }*/ }; //might need to set the resolution
+    var constraints = { audio: true, msgvideo : true /*video: { width: 1280, height: 720 }*/ }; //might need to set the resolution
     navigator.mediaDevices.getUserMedia(constraints)
     .then(function(s) {
 	console.log("Setting Stream");
@@ -271,6 +270,7 @@ function onIceCandidate(candidate){
 function addIceCandidate(){
     console.log("Adding ice candidate");
     myConnection.addIceCandidate(new RTCIceCandidate(icecandidate)); 
+    changeScreen();
 }
 
 function onAddStream(event){
@@ -363,13 +363,7 @@ connectToOtherUsernameBtn.addEventListener("click", function () {
       createOffer(); 
    } 
 });
-//when a user clicks the send message button 
-sendMsgBtn.addEventListener("click", function (event) { 
-   console.log("send message");
-   var val = msgInput.value; 
-   message(val);
-   console.log("sent data " + val);
-});
+
 
 function message(message){
   dataChannel.send(message); 
