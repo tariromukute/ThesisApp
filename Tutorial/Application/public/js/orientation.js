@@ -1,12 +1,8 @@
 
-
-var oAbsolute = document.querySelector('#oAbsolute');
-var oAlpha = document.querySelector('#oAlpha');
-var oBeta = document.querySelector('#oBeta');
-var oGamma = document.querySelector('#oGamma');
-var oAcceleration = document.querySelector('#oAcceleration');
-var oRotationRate = document.querySelector('#oRotationRate');
-var oInterval = document.querySelector('#oInterval');
+var absolute = 0;
+var alpha    = 0;
+var beta     = 0;
+var gamma    = 0;
 
 
 window.addEventListener("deviceorientation", handleOrientation, true);
@@ -14,16 +10,12 @@ window.addEventListener("devicemotion", handleMotion, true);
 
 
 function handleOrientation(event) {
-  var absolute = event.absolute;
-  var alpha    = event.alpha;
-  var beta     = event.beta;
-  var gamma    = event.gamma;
-
+  
   // Do stuff with the new orientation data
-  oAbsolute.value = absolute;
-  oAlpha.value = update(oAlpha.value, alpha);
-  oBeta.value = update2(oBeta.value, beta);
-  oGamma.value = update(oGamma.value, gamma);
+  absolute = event.absolute;
+  alpha = update(alpha, event.alpha);
+  beta.value = update2(beta, event.beta);
+  //gamma.value = update(gamma, event.gamma);
 }
 
 function update(prev, curr){
@@ -56,7 +48,7 @@ function handleMotionAcceleration(event){
   var accY = event.y;
   var accZ = event.z;
 
-  oAcceleration.value = "Acceleration : x = " + accX + ", y = " + accY + ", z = " + accZ;
+  //oAcceleration.value = "Acceleration : x = " + accX + ", y = " + accY + ", z = " + accZ;
 }
 
 function handleMotionRotationRate(event){
@@ -64,11 +56,11 @@ function handleMotionRotationRate(event){
   var beta     = event.beta;
   var gamma    = event.gamma;
 
-  oRotationRate.value = "Rotation Rate : alpha(z) = " + alpha + ", beta(x) = " + beta + ", gamma(y) = " + gamma;
+  //oRotationRate.value = "Rotation Rate : alpha(z) = " + alpha + ", beta(x) = " + beta + ", gamma(y) = " + gamma;
 }
 
 function handleMotionInterval(event){
   var interval = event;
 
-  oInterval = interval;
+  //oInterval = interval;
 }

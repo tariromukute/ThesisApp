@@ -1,73 +1,50 @@
 <html lang = "en"> 
-   <head> 
-      <meta charset = "utf-8" /> 
-   </head>
+  <head> 
+    <meta charset = "utf-8" /> 
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+  </head>
 	
-   <body> 
-	<video autoplay ></video> 
-      <div> 
-         <input type = "text" id = "loginInput" /> 
-         <button id = "loginBtn">Login</button> 
+  <body>
+    <div id = "container">
+
+      <div id = "gearholder" class = "hide_element element">
+        <div id = "gear" class = "hide_element element" ></div>
       </div> 
 
+      <div id = "videoholder" class = "hide_element element">
+        <video autoplay id="livestream" class = "hide_element object-fit_cover element" ></video> 
+      </div>
+  
+      <div id = "init_container">
+
+        <div class = "show_element element"> 
+          <input type = "text" id = "loginInput" class = "show_element element" /> 
+          <button id = "loginBtn" class = "show_element element" >Login</button> 
+        </div> 
+
+        <div class = "show_element element" > 
+          <input type = "text" id = "otherUsernameInput" class = "show_element element" />
+          <button id = "connectToOtherUsernameBtn" class = "show_element element">Establish connection</button> 
+        </div>
+ 
+      </div>
 	
-	
-      <div> 
-         <input type = "text" id = "otherUsernameInput" />
-         <button id = "connectToOtherUsernameBtn">Establish connection</button> 
-      </div> 
+    <div id = "display"> 
+      <p> C1 : </p>
+      <p id = "dataChannelDisplay"> -- </p>
+      </hr>
+      <p> C2 : </p>
+      <p id = "dataChannelDisplay2"> -- </p>
+    </div> 
+    
+    </div><!--container-->
+    
+    <script src="lib/adapter.js"></script>
+    <script src = "js/pointer.js"></script>	
+    <script src = "js/main.js"></script>
+    <script src = "js/orientation.js"></script>
 
-	<div> 
-         <!--input type = "text" id = "msgInput" /--> 
-         <button id = "sendMsgBtn">Send text message</button> 
-      	</div>
-
-	<div> 
-	  <textarea id="msgInput"
-	    placeholder="Enter text here"></textarea>
-	  <textarea id = "dataChannelDisplay"> </textarea>
-	  <textarea id = "dataChannelDisplay2"> </textarea>
-	</div> 
-
-    <div>
-      <label>Orientation Absolute</label>
-      <textarea id="oAbsolute"></textarea>
-    </div>
-
-    <div>
-      <label>Orientation Alpha</label>
-      <textarea id="oAlpha"></textarea>
-    </div>
-
-    <div>
-      <label>Orientation Beta</label>
-      <textarea id="oBeta"></textarea>
-    </div>
-
-    <div>
-      <label>Orientation Gamma</label>
-      <textarea id="oGamma"></textarea>
-    </div>
-
-    <div>
-      <label>Orientation Acceleration</label>
-      <textarea id="oAcceleration"></textarea>
-    </div>
-
-    <div>
-      <label>Orientation Rotation Rate</label>
-      <textarea id="oRotationRate"></textarea>
-    </div>
-
-    <div>
-      <label>Orientation Interval</label>
-      <textarea id="oInterval"></textarea>
-    </div>
-	
-	    <script src="lib/adapter.js"></script>	
-      <script src = "js/main.js"></script>
-	<script src = "js/orientation.js"></script>
 		
-   </body>
+  </body>
 	
 </html>

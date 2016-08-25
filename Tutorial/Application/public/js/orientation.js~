@@ -22,7 +22,7 @@ function handleOrientation(event) {
   // Do stuff with the new orientation data
   oAbsolute.value = absolute;
   oAlpha.value = update(oAlpha.value, alpha);
-  oBeta.value = update(oBeta.value, beta);
+  oBeta.value = update2(oBeta.value, beta);
   oGamma.value = update(oGamma.value, gamma);
 }
 
@@ -30,6 +30,16 @@ function update(prev, curr){
   if(Math.abs(prev - curr) > 5){
     //send data via channel
     message(Math.floor(curr));
+    return Math.floor(curr);
+  }else{
+    return prev;
+  }
+}
+
+function update2(prev, curr){
+  if(Math.abs(prev - curr) > 5){
+    //send data via channel
+    message2(Math.floor(curr));
     return Math.floor(curr);
   }else{
     return prev;
