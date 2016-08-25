@@ -135,9 +135,12 @@ test_dtls_srtp(void) {
   srtp_profile_t profile;
   srtp_err_status_t err;
 
+  //void * memset ( void * ptr, int value, size_t num );
+  //Sets the first num bytes of the block of memory pointed by ptr to the specified value (interpreted as an unsigned char).
   memset(&policy, 0x0, sizeof(srtp_policy_t));
 
   /* create a 'null' SRTP session */
+  // allocate and initialize the SRTP session, where null is thats where the policy woukld have been
   err = srtp_create(&s, NULL);
   if (err) 
     return err;
@@ -145,28 +148,33 @@ test_dtls_srtp(void) {
   /* 
    * verify that packet-processing functions behave properly - we
    * expect that these functions will return srtp_err_status_no_ctx
+   ** sends pkt_octet_len and ssrc => used for identification, to avoid looping and 'collison' of synchronised pkts
    */
   test_packet = srtp_create_test_packet(80, 0xa5a5a5a5);
   if (test_packet == NULL) 
     return srtp_err_status_alloc_fail;
+  //encryptes and authenticates packets
   err = srtp_protect(s, test_packet, &test_packet_len);
   if (err != srtp_err_status_no_ctx) {
     printf("wrong return value from srtp_protect() (got code %d)\n", 
 	   err);
     return srtp_err_status_fail;
   }
+  //verifies the encryption and authentication of packet
   err = srtp_unprotect(s, test_packet, &test_packet_len);
   if (err != srtp_err_status_no_ctx) {
     printf("wrong return value from srtp_unprotect() (got code %d)\n", 
 	   err);
     return srtp_err_status_fail;
   }
+  // applies cryptographic protections to outbound RTCP packets
   err = srtp_protect_rtcp(s, test_packet, &test_packet_len);
   if (err != srtp_err_status_no_ctx) {
     printf("wrong return value from srtp_protect_rtcp() (got code %d)\n", 
 	   err);
     return srtp_err_status_fail;
   }
+  //verifies the protections on inbound RTCP packets
   err = srtp_unprotect_rtcp(s, test_packet, &test_packet_len);
   if (err != srtp_err_status_no_ctx) {
     printf("wrong return value from srtp_unprotect_rtcp() (got code %d)\n", 
@@ -178,15 +186,47 @@ test_dtls_srtp(void) {
   /* 
    * set keys to known values for testing
    */
-  profile = srtp_profile_aes128_cm_sha1_80;
+  profile = srtp_profile_aes128_cm_sha1_80; //cipher_key_length" is also equal to srtp_profile_get_master_key_length
   key_len = srtp_profile_get_master_key_length(profile);
   salt_len = srtp_profile_get_master_salt_length(profile);
   memset(key, 0xff, key_len);
   memset(salt, 0xee, salt_len);
+  /**
+   * @brief appends the salt to the key
+   *
+   * The function call srtp_append_salt_to_key(k, klen, s, slen) 
+   * copies the string s to the location at klen bytes following
+   * the location k.  
+   *
+   * @warning There must be at least bytes_in_salt + bytes_in_key bytes
+   *          available at the location pointed to by key.
+   * 
+   */
   srtp_append_salt_to_key(key, key_len, salt, salt_len);
   policy.key  = key;
 
   /* initialize SRTP policy from profile  */
+  /**
+   * @brief srtp_crypto_policy_set_from_profile_for_rtp() sets a crypto policy
+   * structure to the appropriate value for RTP based on an srtp_profile_t
+   *
+   * @param p is a pointer to the policy structure to be set 
+   * 
+   * The function call srtp_crypto_policy_set_rtp_default(&policy, profile)
+   * sets the srtp_crypto_policy_t at location policy to the policy for RTP
+   * protection, as defined by the srtp_profile_t profile.
+   * 
+   * This function is a convenience that helps to avoid dealing directly
+   * with the policy data structure.  You are encouraged to initialize
+   * policy elements with this function call.  Doing so may allow your
+   * code to be forward compatible with later versions of libSRTP that
+   * include more elements in the srtp_crypto_policy_t datatype.
+   * 
+   * @return values
+   *     - srtp_err_status_ok         no problems were encountered
+   *     - srtp_err_status_bad_param  the profile is not supported 
+   * 
+   */
   err = srtp_crypto_policy_set_from_profile_for_rtp(&policy.rtp, profile);
   if (err) return err;
   err = srtp_crypto_policy_set_from_profile_for_rtcp(&policy.rtcp, profile);
@@ -256,6 +296,7 @@ srtp_create_test_packet(int pkt_octet_len, uint32_t ssrc) {
     *buffer++ = 0xab;
 
   /* set post-data value to 0xffff to enable overrun checking */
+  // data is write to address that werent to be written
   for (i=0; i < SRTP_MAX_TRAILER_LEN+4; i++)
     *buffer++ = 0xff;
 
