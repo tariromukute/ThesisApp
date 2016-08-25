@@ -6,6 +6,7 @@ var connectToOtherUsernameBtn = document.querySelector('#connectToOtherUsernameB
 var msgInput = document.querySelector('#msgInput'); 
 var sendMsgBtn = document.querySelector('#sendMsgBtn');
 var dataChannelDisplay = document.querySelector('textarea#dataChannelDisplay');
+var dataChannelDisplay2 = document.querySelector('textarea#dataChannelDisplay2');
 var connectedUser, myConnection, dataChannel, dataChannel2, icecandidate;
 var stream , video , name;
 var remoteSet = false;
@@ -324,13 +325,18 @@ function onDataChannel(event){
     }
     else if(event.channel.label == "myDataChannel2"){
 	dataChannel2 = event.channel;
-	dataChannel2.onmessage = onDataChannelMessage;
+	dataChannel2.onmessage = onDataChannelMessage2;
     }
 }
 
 function onDataChannelMessage(event){
     console.log("Received message : " + event.data);
     dataChannelDisplay.value = event.data;
+}
+
+function onDataChannelMessage2(event){
+    console.log("Received message : " + event.data);
+    dataChannelDisplay2.value = event.data;
 }
 
 //when a user clicks the login button 
@@ -369,5 +375,8 @@ function message(message){
   dataChannel.send(message); 
 }
 
+function message2(message){
+  dataChannel2.send(message); 
+}
 
 

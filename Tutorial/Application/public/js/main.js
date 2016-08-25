@@ -11,9 +11,9 @@ var connectedUser, myConnection, dataChannel, dataChannel2, icecandidate;
 var stream , video , name;
 var remoteSet = false;
 
-var connection = new WebSocket('wss://ec2-52-42-207-142.us-west-2.compute.amazonaws.com');
+//var connection = new WebSocket('wss://ec2-52-42-207-142.us-west-2.compute.amazonaws.com');
 
-//var connection = new WebSocket('wss://localhost:8080');
+var connection = new WebSocket('wss://localhost:8080');
 
 function hasUserMedia() { 
    //check if the browser supports the WebRTC 
