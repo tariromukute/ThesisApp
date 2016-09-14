@@ -1,0 +1,43 @@
+
+
+/* SENDER LOGIC */
+
+//Send client Hello with SRTP Extension
+void dtls_srtp_send_hello(){
+  
+}
+
+/**
+ * Server Hello with SRTP Extension
+ * Certificate
+ * Server Hello Done
+ */
+void dtls_srtp_send_cert(){
+
+}
+
+/**
+ * Certificate (MIC)
+ * Client Key Exchange
+ * Change Cipher Spec
+ * Finished
+ */
+void dtls_srtp_send_find(){
+
+}
+
+
+/* RECEIVER LOGIC */
+
+//Receive client Hello with SRTP Extension
+void dtls_srtp_receive_hello(){
+
+}
+
+void dtls_srtp_receive_cert(){
+
+}
+
+void dtls_srtp_receive_find(){
+
+}
