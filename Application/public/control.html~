@@ -15,8 +15,8 @@
   </div><!--geardiv-->
 
   <div id="rtcvideo" class="w3-container">
-    <div class="w3-container">
-      <img src="res/effects.jpg" class="" alt="Norway">
+    <div class="w3-display-container">
+      <img src="res/effects.jpg" class="img" alt="Norway">
     </div>
   </div><!--rtcvideo-->
 
