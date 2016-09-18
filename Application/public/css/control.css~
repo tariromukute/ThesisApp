@@ -1,0 +1,50 @@
+#body{
+  background-color:black;
+}
+
+#geardiv{
+  border:2px solid blue;
+  border-radius: 22px;
+  width:100%;
+}
+
+#gear{
+  background-color:green;
+  border:2px solid red;
+  margin:2px;
+  width: 40px;
+  height:40px;
+  border-radius: 21px;
+}
+
+#camera{
+  background-color:white;
+  width:40%;
+  height:60px;
+  border:2px solid white;
+  border-radius:31px;
+}
+
+#pointer{
+  background-color:black;
+  width:15px;
+  height:15px;
+  border:2px solid black;
+  border-radius:16px;
+}
+
+#b4-camera{
+  width:30%;
+}
+
+#after-camera{
+  width:30%
+}
+
+
+
+
+
+
+
+
