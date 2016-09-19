@@ -14,8 +14,9 @@
     
     function start() {
       var gear = document.getElementById("gear");
+      var geardiv = document.getElementById("geardiv");
       gear.addEventListener("touchstart", colorChange, false);
-      gear.addEventListener("touchmove", moveHandler, false);
+      geardiv.addEventListener("touchmove", moveHandler, false);
       gear.addEventListener("touchend", touchEnd, false);
     }
  

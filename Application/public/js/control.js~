@@ -17,7 +17,7 @@ var sheight = window.screen.height * ratio;
 
 $(document).on("pagecreate","#body",function(){
   $("#rtcvideo").css({maxHeight: sheight - 104});
-  $('#rtcvideo').css({left: $("#geardiv").height()});
+  $('#rtcvideo').css({right: $("#geardiv").height()});
   $("#gear").on("tap",function(){
     $(this).css("backgroundColor", "#000");
   });
