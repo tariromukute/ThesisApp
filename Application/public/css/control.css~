@@ -9,6 +9,7 @@ body{
 }
 
 #gear{
+  position: relative;
   background-color:green;
   border:2px solid red;
   margin:2px;
@@ -17,12 +18,11 @@ body{
   border-radius: 21px;
 }
 
-#camera{
+#dispaly{
   background-color:white;
-  width:40%;
+  width:100%;
   height:60px;
-  border:2px solid white;
-  border-radius:31px;
+  border:2px solid white; 
 }
 
 #pointer{
@@ -33,12 +33,17 @@ body{
   border-radius:16px;
 }
 
-#b4-camera{
-  width:30%;
+#livestream{
+  width:100%;
 }
 
-#after-camera{
-  width:30%
+#rtcvideo{
+  -moz-transform : rotate(90deg);
+  -webkit-transform : rotate(90deg);
+  -o-transform : rotate(90deg);
+  -ms-transform : rotate(90deg);
+  transform : rotate(90deg);
+  position : relative;
 }
 
 .img{
