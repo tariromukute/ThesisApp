@@ -23,7 +23,7 @@
       gear.addEventListener("touchend", touchEnd, false);
       var vid = document.getElementById("vid");
       //vid.style.width = sheight - geardiv.height() + 'px' ;
-      console.log(sheight - geardiv.clientHeight + 'px' );
+      console.log(sheight - geardiv.height() + 'px' );
     }
  
     function colorChange(event) {
