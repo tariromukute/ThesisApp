@@ -14,7 +14,7 @@ var sheight = window.screen.height * ratio;
   $( "#log" ).append( " <div>" + msg + "</div>" );
 });
 */
-
+/**
 $(document).on("pagecreate","#body",function(){
   $("#rtcvideo").css({maxHeight: sheight - 104});
   $('#rtcvideo').css({right: $("#geardiv").height()});
@@ -30,3 +30,6 @@ $(document).on("vmousemove", "#geardiv", function(event){
   $("#gear").parent().css({position: 'relative'});
   $("#gear").css({left:event.pageX - 5 });
 });
+*/
+
+
