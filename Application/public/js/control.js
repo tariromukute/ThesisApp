@@ -19,7 +19,8 @@ $(document).on("pagecreate","#body",function(){
   $("#gear").on("taphold",function(){
     $(this).css("backgroundColor", "#777");
   });
-  $("#geardiv").on("vmousemove", function(event){
-    gear.css("left", event.clientX);
-  });
+});
+
+$(document).on("vmousemove", "#geardiv", function(event){
+  gear.css("left", event.clientX);
 });
