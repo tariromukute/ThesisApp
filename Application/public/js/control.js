@@ -9,16 +9,14 @@
 
 $(document).on("pagecreate","#body",function(){
   $("#gear").on("tap",function(){
-    //$(this).css("backgroundColor", "#000");
-    $(this).hide();
+    $(this).css("backgroundColor", "#000");
   });
   $("#gear").on("taphold",function(){
-    //$(this).css("backgroundColor", "#777");
+    $(this).css("backgroundColor", "#777");
   });
 });
 
 $(document).on("vmousemove", "#geardiv", function(event){
-  //$("#gear").parent().css({position: 'relative'});
-  //$("#gear").css({left:event.pageX - 5 });
-  $("#gear").hide();
+  $("#gear").parent().css({position: 'relative'});
+  $("#gear").css({left:event.pageX - 5 });
 });
