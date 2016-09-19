@@ -8,18 +8,31 @@
 <!--script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script-->
 <script type='text/javascript'>
- 
+    var geardiv = document.getElementById("geardiv");
+    var gear = document.getElementById("gear");
+    var rtcvideo = document.getElementById("rtcvideo");
+    
     function start() {
-      var geardiv = document.getElementById("geardiv");
       var gear = document.getElementById("gear");
-      var rtcvideo = document.getElementById("rtcvideo");
       gear.addEventListener("touchstart", colorChange, false);
+      gear.addEventListener("touchmove", moveHandler, false);
+      gear.addEventListener("touchend", touchEnd, false);
     }
  
     function colorChange() {
       var gear = document.getElementById("gear");
-      //gear.style.background-color = "#000";
-      gear.css("backgroundColor", "#000");
+      gear.style.backgroundColor = "#000";
+      //gear.css("backgroundColor", "#000");
+    }
+
+    function moveHandler(event){
+      var gear = document.getElementById("gear");
+      gear.style.left = event.pageX;  
+    }
+
+    function touchEnd(){
+      var gear = document.getElementById("gear");
+      gear.style.left = '0px';
     }
 </script>
 </head>
