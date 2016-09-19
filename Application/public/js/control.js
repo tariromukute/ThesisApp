@@ -1,8 +1,3 @@
-var geardiv = document.getElementById("geardiv");
-var gear = document.getElementById("gear");
-var rtcvideo = document.getElementById("rtcvideo");
-var camera = document.getElementById("camera");
-
 
 /**$( function () {
   $( document ).on ( "vmousemove", "#target", function(event) {
