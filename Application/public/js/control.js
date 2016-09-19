@@ -22,5 +22,6 @@ $(document).on("pagecreate","#body",function(){
 });
 
 $(document).on("vmousemove", "#geardiv", function(event){
-  gear.css("left", event.clientX);
+  //$("#gear").parent().css({position: 'relative'});
+  $("#gear").css({left:event.pageX - 5 });
 });

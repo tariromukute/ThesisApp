@@ -9,6 +9,7 @@ body{
 }
 
 #gear{
+  position: relative;
   background-color:green;
   border:2px solid red;
   margin:2px;
