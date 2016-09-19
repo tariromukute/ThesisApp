@@ -22,7 +22,7 @@
       geardiv.addEventListener("touchmove", moveHandler, false);
       gear.addEventListener("touchend", touchEnd, false);
       var vid = document.getElementById("vid");
-      vid.style.width = sheight - geardiv.height() + 'px' ;
+      //vid.style.width = sheight - geardiv.clientHeight + 'px' ;
       console.log(sheight - geardiv.clientHeight + 'px' );
     }
  
@@ -55,7 +55,7 @@
 
   <div id="rtcvideo" class="w3-container">
     <div id="vid" class="w3-display-container">
-      <img id="livestream" src="res/effects.jpg" class="img" alt="Norway">
+      <img id="livestream" src="res/cool-wallpaper-2.jpg" class="img" alt="Norway">
     </div>
   </div><!--rtcvideo-->
 

@@ -35,18 +35,21 @@ body{
 
 #livestream{
   width:100%;
-  height:100%;
-}
-
-#rtcvideo{
-  position:relative;
+  height:auto;
 }
 
 #vid{
- -webkit-transform: rotate(-90deg);
+  /*position:relative;*/
+}
+
+#rtcvideo{
+  top:100%;
+  left:100%;
+  height:100%;
+  width:100%;
+ -webkit-transform: rotate(90deg);
   -webkit-transform-origin: 0 0;
   position:relative;
-  top:100%;
 }
 
 .img{
