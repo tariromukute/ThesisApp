@@ -22,8 +22,8 @@
       geardiv.addEventListener("touchmove", moveHandler, false);
       gear.addEventListener("touchend", touchEnd, false);
       var vid = document.getElementById("vid");
-      //vid.style.width = sheight - geardiv.height() + 'px' ;
-      console.log(sheight - geardiv.height() + 'px' );
+      vid.style.width = sheight - geardiv.height() + 'px' ;
+      console.log(sheight - geardiv.clientHeight + 'px' );
     }
  
     function colorChange(event) {
