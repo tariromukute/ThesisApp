@@ -11,19 +11,24 @@
     var geardiv = document.getElementById("geardiv");
     var gear = document.getElementById("gear");
     var rtcvideo = document.getElementById("rtcvideo");
-    
+    var swidth = window.screen.width;
+    var sheight = window.screen.height;
+
     function start() {
       var gear = document.getElementById("gear");
       var geardiv = document.getElementById("geardiv");
       var ratio = window.devicePixelRatio || 1;
-      var swidth = window.screen.width * ratio;
-      var sheight = window.screen.height * ratio;
+      var swidth = window.screen.width;
+      var sheight = window.screen.height;
       gear.addEventListener("touchstart", colorChange, false);
       geardiv.addEventListener("touchmove", moveHandler, false);
       gear.addEventListener("touchend", touchEnd, false);
       var vid = document.getElementById("vid");
-      vid.style.width = sheight - geardiv.clientHeight + 'px' ;
+      vid.style.width = sheight - geardiv.clientHeight - 20 + 'px' ;
       console.log(sheight - geardiv.clientHeight + 'px' );
+      console.log("screen" + screen.width);
+      console.log("window" + window.screen.width);
+      console.log("window" + window.screen.width*ratio);
     }
  
     function colorChange(event) {
@@ -37,12 +42,20 @@
     function moveHandler(event){
       var gear = document.getElementById("gear");
       var touch = event.changedTouches[0];
-      gear.style.left = touch.pageX -25 + 'px';
-      console.log(touch.pageX + 'px');  
+      gear.style.margin = "0px"; //remove the centering effect
+      var pos = (touch.pageX);
+      if(pos > swidth - 40)
+        pos = swidth-40;
+      else if(pos < 0 + 40)
+        pos = 40;
+      var speed = (pos)/swidth - 0.5
+      gear.style.left = pos -25 + 'px';
+      console.log(speed);  
     }
 
     function touchEnd(){
       var gear = document.getElementById("gear");
+      gear.style.margin = "auto"; //put gear back to center
       gear.style.left = '0px';
     }
 </script>
