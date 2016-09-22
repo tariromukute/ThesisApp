@@ -270,7 +270,7 @@ function onIceCandidate(candidate){
 function addIceCandidate(){
     console.log("Adding ice candidate");
     myConnection.addIceCandidate(new RTCIceCandidate(icecandidate)); 
-    changeScreen();
+    //changeScreen();
 }
 
 function onAddStream(event){

@@ -63,7 +63,7 @@
 </script>
 </head>
 <body onload="start()">
-  <div id="connect" class="w3-container">
+  <div id="connect" class="w3-container show_element">
     <div class = ""> 
       <input type = "text" id = "loginInput" class = "" /> 
       <button id = "loginBtn" class = "" >Login</button> 
@@ -75,7 +75,7 @@
      </div>
   </div><!--connect-->
 
-  <div id="communication" class="w3-container">
+  <div id="communication" class="w3-container hide_element">
     <div id="geardiv" class="w3-container">
       <div id="gear" class="w3-container">
       </div><!--gear-->
