@@ -3,33 +3,16 @@
 */
 
 
-
-function onButtonClick() {
-  log('Requesting Bluetooth Device...');
-  navigator.bluetooth.requestDevice(
-    {filters: [{services: ['battery_service']}]})
-  .then(device => {
-    log('Connecting to GATT Server...');
-    return device.gatt.connect();
-  })
-  .then(server => {
-    log('Getting Battery Service...');
-    return server.getPrimaryService('battery_service');
-  })
-  .then(service => {
-    log('Getting Battery Level Characteristic...');
-    return service.getCharacteristic('battery_level');
-  })
-  .then(characteristic => {
-    log('Reading Battery Level...');
-    return characteristic.readValue();
-  })
-  .then(value => {
-    let batteryLevel = value.getUint8(0);
-    log('> Battery Level is ' + batteryLevel + '%');
-    document.getElementById("battery_level").innerHTML = 'Battery Level is ' + batteryLevel + '%';
-  })
-  .catch(error => {
-    log('Argh! ' + error);
-  });
-}
+const button = document.querySelector('#the-button');
+button.addEventListener('click', function() {
+  document.querySelector('#info').innerHTML = 'Connecting....';
+  navigator.bluetooth.requestDevice({
+	filters: [{
+		services: ['c97433f0-be8f-4dc8-b6f0-5343e6100eb4']
+	}]
+  }).then(device => {
+    document.querySelector('#data').innerHTML = 'Device Name ' + device.name;
+  }).catch(exception => {
+	document.querySelector('#data').innerHTML = "Error " + exception;
+  }); 
+});
