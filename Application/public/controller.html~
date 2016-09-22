@@ -13,6 +13,7 @@
     var rtcvideo = document.getElementById("rtcvideo");
     var swidth = window.screen.width;
     var sheight = window.screen.height;
+    var speed = 0;
 
     function start() {
       var gear = document.getElementById("gear");
@@ -48,7 +49,7 @@
         pos = swidth-40;
       else if(pos < 0 + 40)
         pos = 40;
-      var speed = (pos)/swidth - 0.5
+      speed = (pos)/swidth - 0.5
       gear.style.left = pos -25 + 'px';
       console.log(speed);  
     }
@@ -57,6 +58,7 @@
       var gear = document.getElementById("gear");
       gear.style.margin = "auto"; //put gear back to center
       gear.style.left = '0px';
+      speed = 0;
     }
 </script>
 </head>
