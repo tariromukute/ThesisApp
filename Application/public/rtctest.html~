@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<link rel="stylesheet" type="text/css" href="css/control.css">
+<!--script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script-->
+<script type='text/javascript'>
+    var geardiv = document.getElementById("geardiv");
+    var gear = document.getElementById("gear");
+    var rtcvideo = document.getElementById("rtcvideo");
+    var swidth = window.screen.width;
+    var sheight = window.screen.height;
+    var speed = 0;
+
+    function start() {
+      var gear = document.getElementById("gear");
+      var geardiv = document.getElementById("geardiv");
+      var ratio = window.devicePixelRatio || 1;
+      var swidth = window.screen.width;
+      var sheight = window.screen.height;
+      gear.addEventListener("touchstart", colorChange, false);
+      geardiv.addEventListener("touchmove", moveHandler, false);
+      gear.addEventListener("touchend", touchEnd, false);
+      var vid = document.getElementById("vid");
+      vid.style.width = sheight - geardiv.clientHeight - 20 + 'px' ;
+      console.log(sheight - geardiv.clientHeight + 'px' );
+      console.log("screen" + screen.width);
+      console.log("window" + window.screen.width);
+      console.log("window" + window.screen.width*ratio);
+    }
+ 
+    function colorChange(event) {
+      var gear = document.getElementById("gear");
+      gear.style.backgroundColor = "#000";
+      var to = event.changedTouches[0];
+      console.log(to.pageX + 'px');
+      //gear.css("backgroundColor", "#000");
+    }
+
+    function moveHandler(event){
+      var gear = document.getElementById("gear");
+      var touch = event.changedTouches[0];
+      gear.style.margin = "0px"; //remove the centering effect
+      var pos = (touch.pageX);
+      if(pos > swidth - 40)
+        pos = swidth-40;
+      else if(pos < 0 + 40)
+        pos = 40;
+      speed = (pos)/swidth - 0.5
+      gear.style.left = pos -25 + 'px';
+      console.log(speed);  
+    }
+
+    function touchEnd(){
+      var gear = document.getElementById("gear");
+      gear.style.margin = "auto"; //put gear back to center
+      gear.style.left = '0px';
+      speed = 0;
+    }
+</script>
+</head>
+<body onload="start()">
+  <div id="connect" class="w3-container show_element">
+    <div class = ""> 
+      <input type = "text" id = "loginInput" class = "" /> 
+      <button id = "loginBtn" class = "" >Login</button> 
+     </div> 
+
+     <div class = "" > 
+       <input type = "text" id = "otherUsernameInput" class = "" />
+       <button id = "connectToOtherUsernameBtn" class = "">Establish connection</button> 
+     </div>
+  </div><!--connect-->
+
+  <div id="communication" class="w3-container hide_element">
+    <div id="geardiv" class="w3-container">
+      <div id="gear" class="w3-container">
+      </div><!--gear-->
+    </div><!--geardiv-->
+
+    <div id="rtcvideo" class="w3-container">
+      <div id="vid" class="w3-display-container">
+        <img id="livestream" src="res/cool-wallpaper-2.jpg" class="img" alt="Norway">
+      </div>
+    </div><!--rtcvideo-->
+
+    <div id="display" class="w3-container">
+      <p> C1 : </p>
+        <p id = "dataChannelDisplay"> -- </p>
+        </hr>
+        <p> C2 : </p>
+        <p id = "dataChannelDisplay2"> -- </p>
+    </div><!--camera-->
+  </div><!--communication-->
+
+  <!--script src="js/control.js"></script-->
+  <script src="lib/adapter.js"></script>
+  <!--script src = "js/pointer.js"></script-->	
+  <script src = "js/main.js"></script>
+  <script src = "js/orientation.js"></script>
+</body>
+</html>

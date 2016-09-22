@@ -373,4 +373,9 @@ function message2(message){
   dataChannel2.send(message); 
 }
 
+function changeScreen(){
+  document.querySelector('#connect').className = "hide_element";
+  document.querySelector('#communication').className = "show_element";
+}
+
 
