@@ -8,17 +8,25 @@ const bluetoothButton = document.querySelector('#the-button');
 
 //send control commands to the robot
 function sendCommand(cmd){
+  document.querySelector('#send-cmd').innerHTML = 'send command ' + cmd;
   if (writeCharacteristic) {
     // Handle one command at a time
+    document.querySelector('#value').innerHTML = 'write Characteristic was set';
     if (busy) {
+      document.querySelector('#value').innerHTML = 'another process is busy';
     // Return if another operation pending
       return Promise.resolve();
     }
     busy = true;
     return writeCharacteristic.writeValue(cmd).then(() => {
+      document.querySelector('#value').innerHTML = 'successfully sent';
       busy = false;
+    })
+    .catch(exception => {
+        document.querySelector('#data').innerHTML = "Error " + exception;
     });
   } else {
+    document.querySelector('#value').innerHTML = 'write characteristic not set';
     return Promise.resolve();
   }
 }
@@ -56,6 +64,7 @@ bluetoothButton.addEventListener('click', function(){
 	console.log("Found write characteristic");
 	writeCharacteristic = characteristic;
 	//return read characteristic
+        testWrite();
 	return chosenService.getCharacteristic('c97433f1-be8f-4dc8-b6f0-5343e6100eb4');
   })
   .then(characteristic => {
@@ -65,7 +74,7 @@ bluetoothButton.addEventListener('click', function(){
 	return readCharacteristic.startNotifications().then(() => {
 	  readCharacteristic.addEventListener('characteristicvaluechanged', event => {
 		console.log('characteristicvaluechanged now = ' + event.target.value + ' [' + event.target.value.byteLength +']');
-		document.querySelector('#data').innerHTML ='characteristicvaluechanged now = ' + event.target.value + ' [' + event.target.value.byteLength +']';
+		//document.querySelector('#data').innerHTML ='characteristicvaluechanged now = ' + event.target.value + ' [' + event.target.value.byteLength +']';
 		if (event.target.value.byteLength >= 2) {
 		  let value = new Uint8Array(event.target.value);
 		  //switch to handle the possible case that might be occuring
@@ -79,15 +88,25 @@ bluetoothButton.addEventListener('click', function(){
   .catch(exception => {
         document.querySelector('#data').innerHTML = "Error " + exception;
   });
+  //setTimeout(function(){ document.querySelector('#init').innerHTML = 'initialisation finished';}, 1000);  
+  //setTimeout(testWrite, 3000);
   
-  setTimeout(testWrite, 3000);
 });
 
-
-
+var c = 0;
+sendButton = document.querySelector('#send-button');
+sendButton.addEventListener('click', function(){
+   c++
+   const cmd = new Uint8Array([c]);
+   //setTimeout(sendCommand(cmd), 2000);
+   sendCommand(cmd);  
+});
 
 function testWrite(){
-  for( i = 0; i < 5; i++){
-	setTimeout(sendCommand(i), 1500);
-  }
+  document.querySelector('#testW').innerHTML = 'testWrite running';
+   c++
+        const cmd = new Uint8Array([c]);
+        //setTimeout(sendCommand(cmd), 2000);
+        sendCommand(cmd);
+  
 }
