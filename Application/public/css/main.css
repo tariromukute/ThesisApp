@@ -59,11 +59,13 @@
 }
 
 .show_element{
-  visibility : visible;
+  /* visibility : visible; */
+  display: block;  
 }
 
 .hide_element{
-  visibility : hidden;
+  /* visibility : hidden; */
+  display: none;
 }
 
 #display{

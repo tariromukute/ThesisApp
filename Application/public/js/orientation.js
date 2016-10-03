@@ -1,27 +1,28 @@
 
+/** defined in control.js
 var absolute = 0;
 var alpha    = 0;
 var beta     = 0;
 var gamma    = 0;
+*/
 
-
-window.addEventListener("deviceorientation", handleOrientation, true);
-window.addEventListener("devicemotion", handleMotion, true);
-
+function initOrientation(){
+  window.addEventListener("deviceorientation", handleOrientation, true);
+  window.addEventListener("devicemotion", handleMotion, true);
+}
 
 function handleOrientation(event) {
   
   // Do stuff with the new orientation data
   absolute = event.absolute;
-  alpha = update(alpha, event.alpha);
+  alpha = updateAlpha(alpha, event.alpha);
   beta.value = update2(beta, event.beta);
   //gamma.value = update(gamma, event.gamma);
 }
 
-function update(prev, curr){
+function updateAlpha(prev, curr){
   if(Math.abs(prev - curr) > 5){
-    //send data via channel
-    message(Math.floor(curr));
+	sendDrive(Math.floor(curr), null);
     return Math.floor(curr);
   }else{
     return prev;

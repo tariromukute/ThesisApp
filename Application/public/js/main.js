@@ -26,14 +26,14 @@ console.log("Browseer supports media devices");
       || navigator.mozGetUserMedia; 
 		
    //enabling video and audio channels 
-   /**
+   /*
    navigator.getUserMedia({ video: true, audio: true }, function (s) { 
       stream = s; 
       video = document.querySelector('video'); 
 		 
    }, function (err) {}); 
    */
-    var constraints = { audio: true, video : true /*video: { width: 1280, height: 720 }*/ }; //might need to set the resolution
+    var constraints = { /* audio: true, */ video : true /*video: { width: 1280, height: 720 }*/ }; //might need to set the resolution, audio not necessary
     navigator.mediaDevices.getUserMedia(constraints)
     .then(function(s) {
 	console.log("Setting Stream");
@@ -295,7 +295,7 @@ function createDataChannel(){
    myConnection.ondatachannel = onDataChannel;
 
    dataChannel.onopen = function (event) {
-	console.log("Data Channel Open");
+	console.log("Data Channel 1 Open");
    };
 
    dataChannel.onerror = function (error) { 
@@ -307,7 +307,7 @@ function createDataChannel(){
    
 
    dataChannel2.onopen = function (event) {
-	console.log("Data Channel Open");
+	console.log("Data Channel 2 Open");
    };
 
    dataChannel2.onerror = function (error) { 
@@ -331,12 +331,16 @@ function onDataChannel(event){
 
 function onDataChannelMessage(event){
     console.log("Received message : " + event.data);
-    dataChannelDisplay.value = event.data;
+    //dataChannelDisplay.value = event.data;
+	//send drive commands via ble.js sendCommand function
+	if(!busy){
+	    sendCommand(event.data);	
+	}
 }
 
 function onDataChannelMessage2(event){
-    console.log("Received message : " + event.data);
-    dataChannelDisplay2.value = event.data;
+    console.log("Received message 2 : " + event.data);
+    //dataChannelDisplay2.value = event.data;
 }
 
 //when a user clicks the login button 
@@ -354,10 +358,12 @@ loginBtn.addEventListener("click", function(event){
 
 //setup a peer connection with another user 
 connectToOtherUsernameBtn.addEventListener("click", function () { 
- 
+   
    var otherUsername = otherUsernameInput.value; 
    connectedUser = otherUsername;
-	console.log("connectedUser has been set to : " + otherUsername);
+   // set the type of user. function defined in ble.js
+   setUserType(SENDER);
+   console.log("connectedUser has been set to : " + otherUsername);
    if (otherUsername.length > 0) { 
       //make an offer 
       createOffer(); 

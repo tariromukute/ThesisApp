@@ -1,3 +1,8 @@
+
+var NOTREG = 0;
+var RECEIVER = 1;
+var SENDER = 2;
+var UserType = NOTREG; // 0
 let gattServer;
 let chosenService;;
 let writeCharacteristic;
@@ -42,6 +47,8 @@ function requestNotification(type){
 } 
 
 bluetoothButton.addEventListener('click', function(){
+  //register the User as a Receiver
+  UserType = RECEIVER;
   navigator.bluetooth.requestDevice({
     filters: [{
       services: ['c97433f0-be8f-4dc8-b6f0-5343e6100eb4'],
@@ -108,5 +115,23 @@ function testWrite(){
         const cmd = new Uint8Array([c]);
         //setTimeout(sendCommand(cmd), 2000);
         sendCommand(cmd);
+  
+}
+
+function setUserType(type){
+  UserType = type;
+  if(type === RECEIVER){
+    document.querySelector('#otherUsernameInput').disable = true;
+	document.querySelector('#connectToOtherUsernameBtn').disable = true;
+  }
+  else if(type === SENDER){
+	document.querySelector('#the-button').disable = true;
+	document.querySelector('#send-button').disable = true;
+	document.querySelector('#geardiv').display = 'none';
+	// enable the scripts to get the device orientation data to be used for control
+	// will indirectly enable sending of data via data channels
+	// function defined in orientation.js
+	initOrientation();
+  }
   
 }

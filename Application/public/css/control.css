@@ -10,7 +10,7 @@ body{
 
 #gear{
   position: relative;
-  background-color:green;
+  /* background-color:green; */
   border:2px solid red;
   margin:auto;/* to center gear */
   width: 40px;
@@ -57,11 +57,13 @@ body{
 }
 
 .show_element{
-  visibility : visible;
+  /* visibility : visible; */
+  display: block;  
 }
 
 .hide_element{
-  visibility : hidden;
+  /* visibility : hidden; */
+  display: none;
 }
 
 
