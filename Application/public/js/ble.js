@@ -48,7 +48,7 @@ function requestNotification(type){
 
 bluetoothButton.addEventListener('click', function(){
   //register the User as a Receiver
-  UserType = RECEIVER;
+  setUserType(RECEIVER);
   navigator.bluetooth.requestDevice({
     filters: [{
       services: ['c97433f0-be8f-4dc8-b6f0-5343e6100eb4'],
