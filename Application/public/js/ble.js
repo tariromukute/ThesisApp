@@ -121,12 +121,12 @@ function testWrite(){
 function setUserType(type){
   UserType = type;
   if(type === RECEIVER){
-    document.querySelector('#otherUsernameInput').disable = true;
-	document.querySelector('#connectToOtherUsernameBtn').disable = true;
+    document.querySelector('#otherUsernameInput').display = 'none';
+	document.querySelector('#connectToOtherUsernameBtn').display = 'none';
   }
   else if(type === SENDER){
-	document.querySelector('#the-button').disable = true;
-	document.querySelector('#send-button').disable = true;
+	document.querySelector('#the-button').display = 'none';
+	document.querySelector('#send-button').display = 'none';
 	document.querySelector('#geardiv').display = 'none';
 	// enable the scripts to get the device orientation data to be used for control
 	// will indirectly enable sending of data via data channels
