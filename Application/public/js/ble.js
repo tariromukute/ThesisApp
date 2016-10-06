@@ -48,7 +48,7 @@ function requestNotification(type){
 
 bluetoothButton.addEventListener('click', function(){
   //register the User as a Receiver
-  setUserType(RECEIVER);
+  //setUserType(RECEIVER);  // Uncomment when using the webrtc, comment when using direct ble access : bleorien.html
   navigator.bluetooth.requestDevice({
     filters: [{
       services: ['c97433f0-be8f-4dc8-b6f0-5343e6100eb4'],
@@ -117,6 +117,8 @@ function testWrite(){
         sendCommand(cmd);
   
 }
+
+
 
 function setUserType(type){
   UserType = type;

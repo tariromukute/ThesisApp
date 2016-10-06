@@ -72,11 +72,24 @@ function updateSpeed(prev, curr, position){
 function sendDrive(angle, velocity){
   //send data via channel using message function in main.js
   //message should be of type ArrayUint8 : [ angle, speed ]
+  //Uncomment when using the webrtc, comment when using direct ble access : bleorien.html
+  /*
   if(angle === null){ // if it has been called due to change of speed value
     message(new Uint8Array( [ alpha , velocity ] ));
   }else{ // has been called due to change in orientation
 	message(new Uint8Array( [angle, speed] ));
   }	
+  */
+  
+  //comment out when using the webrtc, uncomment when using direct ble access : bleorien.html
+  if(!busy){
+    if(angle === null ){ // if it has been called due to change of speed value
+      sendCommand(new Uint8Array( [ alpha , velocity ] ));
+    }else if(angle != null){ // has been called due to change in orientation
+	  sendCommand(new Uint8Array( [angle, speed] ));
+    }	
+  }
+  
 }
 
 
