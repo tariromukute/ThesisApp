@@ -21,7 +21,7 @@ function handleOrientation(event) {
 }
 
 function updateAlpha(prev, curr){
-  if(Math.abs(prev - curr) > 5){
+  if(Math.abs(prev - curr) > 30){
 	sendDrive(Math.floor(curr), null);
     return Math.floor(curr);
   }else{

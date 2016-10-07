@@ -60,11 +60,12 @@ function touchEnd(){
 }
 
 function updateSpeed(prev, curr, position){
-  if(Math.abs(prev - curr) > 5){
-	sendDrive( null, Math.floor(curr));
+  if(Math.abs(prev - curr) > 40){
+	//sendDrive( null, Math.floor(curr));
 	gear.style.left = position -25 + 'px';
     return Math.floor(curr);
   }else{
+	gear.style.left = position -25 + 'px';
     return prev;
   }
 }
