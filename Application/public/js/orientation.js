@@ -6,6 +6,9 @@ var beta     = 0;
 var gamma    = 0;
 */
 
+var startButton = document.querySelector("#start-button");
+startButton.addEventListener('click', initOrientation());
+
 function initOrientation(){
   window.addEventListener("deviceorientation", handleOrientation, true);
   window.addEventListener("devicemotion", handleMotion, true);
