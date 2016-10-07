@@ -42,7 +42,7 @@ function moveHandler(event){
   var touch = event.changedTouches[0];
   gear.style.margin = "0px"; //remove the centering effect
   var pos = (touch.pageX);
-  if(pos > swidth - 40)
+  if(pos > swidth - 40) // 40 is the diameter of the gear
 	pos = swidth-40;
   else if(pos < 0 + 40)
 	pos = 40;
@@ -60,12 +60,12 @@ function touchEnd(){
 }
 
 function updateSpeed(prev, curr, position){
-  if(Math.abs(prev - curr) > 40){
+  if(Math.abs(prev - curr) > 5){
 	//sendDrive( null, Math.floor(curr));
 	gear.style.left = position -25 + 'px';
     return Math.floor(curr);
   }else{
-	gear.style.left = position -25 + 'px';
+	//gear.style.left = position -25 + 'px';
     return prev;
   }
 }

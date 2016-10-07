@@ -130,10 +130,6 @@ function setUserType(type){
 	document.querySelector('#the-button').display = 'none';
 	document.querySelector('#send-button').display = 'none';
 	document.querySelector('#geardiv').display = 'none';
-	// enable the scripts to get the device orientation data to be used for control
-	// will indirectly enable sending of data via data channels
-	// function defined in orientation.js
-	initOrientation();
   }
   
 }
