@@ -72,6 +72,7 @@ bluetoothButton.addEventListener('click', function(){
 	writeCharacteristic = characteristic;
 	//return read characteristic
         testWrite();
+		//enable orientation data here
 		initOrientation();
 	return chosenService.getCharacteristic('c97433f1-be8f-4dc8-b6f0-5343e6100eb4');
   })
