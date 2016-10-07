@@ -70,10 +70,8 @@ bluetoothButton.addEventListener('click', function(){
   .then(characteristic => {
 	console.log("Found write characteristic");
 	writeCharacteristic = characteristic;
-	//return read characteristic
-        testWrite();
-		//enable orientation data here
-		initOrientation();
+    testWrite();
+		
 	return chosenService.getCharacteristic('c97433f1-be8f-4dc8-b6f0-5343e6100eb4');
   })
   .then(characteristic => {

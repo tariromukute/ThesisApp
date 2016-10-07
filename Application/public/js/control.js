@@ -46,7 +46,7 @@ function moveHandler(event){
 	pos = swidth-40;
   else if(pos < 0 + 40)
 	pos = 40;
-  speed = updateSpeed(speed, ((pos)/swidth - 0.5) * 100, position);
+  speed = updateSpeed(speed, ((pos)/swidth - 0.5) * 100, pos);
   
   console.log(speed);  
 }
