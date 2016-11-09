@@ -280,12 +280,13 @@ function onAddStream(event){
   	video.src = URL.createObjectURL(event.stream);
     }
     video.onloadedmetadata = function(e) {
-   	video.play();
+   	    video.play();
     };
 }
 
 function createDataChannel(){
     var dataChannelOptions = { 
+	    ordered: true,
       	reliable:false 
     }; 
 	
