@@ -47,6 +47,7 @@ http://www.rfduino.com/wp-content/uploads/2014/03/rfduino.ble_.programming.refer
 */
 
 #include <RFduinoBLE.h>
+#include <Wire.h>
 
 // pin 3 on the RGB shield is the green led
 // (shows when the RFduino is advertising or not)
@@ -57,15 +58,17 @@ int ble_led = 4;
 // (goes on when the RFduino has a connection from the iPhone, and goes off on disconnect)
 int connection_led = 2;
 
-int i = 1;
-int8_t buff[2];
+int i = 0;
+uint8_t buff[2];
 uint8_t instruction[1];
+uint32_t temp[10];
+
 bool busy = false;
 
 void setup() {
 
   //initialise I2C 
-  Wire.begin(0x04);
+  Wire.beginTransmission(0x04);
   Wire.onRequest(i2c_request_event);
   Wire.onReceive(i2c_receive_event);
   
@@ -133,6 +136,12 @@ void RFduinoBLE_onReceive(char *data, int len) {
     buff[1] = data[1]; // angle
     Serial.println(i);
   }
+  if(i > 9){
+    while(i > 0){
+      Serial.println(temp[i])
+      i--;
+    }
+  }
   busy = false;
   digitalWrite(ble_led, LOW);
 }
@@ -140,11 +149,11 @@ void RFduinoBLE_onReceive(char *data, int len) {
 void i2c_receive_event(int bytesIn){
   while(busy)
     RFduino_ULPDelay(5);
-
+  int read_byte = 0;
   busy = true;
   digitalWrite(i2c_led, HIGH);
   read_byte = bytesIn;
-  byte_count = 0;
+  int byte_count = 0;
   while(1 < Wire.available()) // loop through all but the last
   {
     read_byte = Wire.read(); 
