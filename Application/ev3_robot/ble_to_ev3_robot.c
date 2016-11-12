@@ -37,7 +37,7 @@ void read_drive_instructions(int message_size, int return_size, ubyte service_ty
 	I2Cmessage[2] = service_type;
 	//// can't add more than 5 Bytes
 
-	// return_size is the expected byte reply, set to zero if rely not wanted
+	// return_size is the expected byte reply, set to zero if reply not wanted
 	sendI2CMsg(S1, I2Cmessage, return_size);
 
 	while (nI2CStatus[S1] == STAT_COMM_PENDING)

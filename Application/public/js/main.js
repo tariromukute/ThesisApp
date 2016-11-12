@@ -292,7 +292,7 @@ function createDataChannel(){
 	
    
    dataChannel = myConnection.createDataChannel("myDataChannel", dataChannelOptions);
-   dataChannel2 = myConnection.createDataChannel("myDataChannel2", dataChannelOptions);
+   
    myConnection.ondatachannel = onDataChannel;
 
    dataChannel.onopen = function (event) {
@@ -305,17 +305,6 @@ function createDataChannel(){
 
    dataChannel.onmessage = onDataChannelMessage;
    
-   
-
-   dataChannel2.onopen = function (event) {
-	console.log("Data Channel 2 Open");
-   };
-
-   dataChannel2.onerror = function (error) { 
-      	console.log("Error:", error); 
-   };
-
-   dataChannel2.onmessage = onDataChannelMessage;
 }
 
 function onDataChannel(event){
@@ -323,10 +312,6 @@ function onDataChannel(event){
     if(event.channel.label == "myDataChannel"){
     	dataChannel = event.channel;
 	dataChannel.onmessage = onDataChannelMessage;
-    }
-    else if(event.channel.label == "myDataChannel2"){
-	dataChannel2 = event.channel;
-	dataChannel2.onmessage = onDataChannelMessage2;
     }
 }
 
@@ -339,10 +324,6 @@ function onDataChannelMessage(event){
 	}
 }
 
-function onDataChannelMessage2(event){
-    console.log("Received message 2 : " + event.data);
-    //dataChannelDisplay2.value = event.data;
-}
 
 //when a user clicks the login button 
 loginBtn.addEventListener("click", function(event){ 
@@ -376,13 +357,19 @@ function message(message){
   dataChannel.send(message); 
 }
 
-function message2(message){
-  dataChannel2.send(message); 
-}
 
 function changeScreen(){
   document.querySelector('#connect').className = "hide_element";
   document.querySelector('#communication').className = "show_element";
 }
 
+testButton = document.querySelector('#test-button');
+testButton.addEventListener('click', function(){
+    
+   for(i = 0; i < 10; i++){
+	  setInterval(function(){
+		message(i);  
+	  }, 3000);
+  }
+});
 

@@ -58,7 +58,7 @@ bluetoothButton.addEventListener('click', function(){
   .then(server => {
     console.log("Found GATT server");
 	gattServer = server;
-	//get the service to control the car
+	//get the service to control the robot
 	return gattServer.getPrimaryService('c97433f0-be8f-4dc8-b6f0-5343e6100eb4')
   })
   .then(service => {
@@ -95,28 +95,30 @@ bluetoothButton.addEventListener('click', function(){
   .catch(exception => {
         document.querySelector('#data').innerHTML = "Error " + exception;
   });
-  //setTimeout(function(){ document.querySelector('#init').innerHTML = 'initialisation finished';}, 1000);  
-  //setTimeout(testWrite, 3000);
   
 });
 
 var c = 0;
-sendButton = document.querySelector('#send-button');
-sendButton.addEventListener('click', function(){
-   c++
-   const cmd = new Uint8Array([c]);
-   //setTimeout(sendCommand(cmd), 2000);
-   sendCommand(cmd);  
-});
 
 function testWrite(){
   document.querySelector('#testW').innerHTML = 'testWrite running';
    c++
-        const cmd = new Uint8Array([c]);
-        //setTimeout(sendCommand(cmd), 2000);
+        const cmd = new Uint8Array([c, c]);
         sendCommand(cmd);
   
 }
+
+sendButton = document.querySelector('#send-button');
+sendButton.addEventListener('click', function(){
+   //c++
+   //const cmd = new Uint8Array([c]);
+   //sendCommand(cmd);  
+   for(i = 0; i < 10; i++){
+	  setInterval(testWrite(), 3000);
+  }
+});
+
+
 
 
 

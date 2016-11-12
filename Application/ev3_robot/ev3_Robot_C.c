@@ -25,9 +25,9 @@ SensorType[S1] = sensorI2CCustom;
 void read_drive_instructions(int message_size, int return_size, ubyte service_type, *ubyte velocity, *ubyte angle)
 {
 	memset(I2Creply, 0, sizeof(I2Creply));
-	
-	//These 3 bytes are the messageâ€™s header. These are( slave_address, message_size, return_size )
-	message_size = message_size+3; 
+
+	//These 3 bytes are the messageâ??s header. These are( slave_address, message_size, return_size )
+	message_size = message_size+3;
 
 	I2Cmessage[0] = message_size; // Messsage Size
 	I2Cmessage[1] = RFDUINO_ADDRESS;
@@ -36,7 +36,7 @@ void read_drive_instructions(int message_size, int return_size, ubyte service_ty
 
 	// return_size is the expected byte reply, set to zero if rely not wanted
 	sendI2CMsg(S1, I2Cmessage, return_size);
-	
+
 	while (nI2CStatus[S1] == STAT_COMM_PENDING)
 		wait1Msec(20);
 
@@ -70,11 +70,11 @@ task main()
 	int ultrasonic_value;
 	byte velocity = 0x00;
 	byte angle = 0x00;
-	
+
 	while(true)
 	{
 		read_drive_instructions(0, 2, 0x01, &velocity, &angle);
 		wait1Msec(40);
-		
+
 	}
 }
