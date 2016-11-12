@@ -42,7 +42,7 @@ function moveHandler(event){
   var touch = event.changedTouches[0];
   gear.style.margin = "0px"; //remove the centering effect
   var pos = (touch.pageX);
-  if(pos > swidth - 40)
+  if(pos > swidth - 40) // 40 is the diameter of the gear
 	pos = swidth-40;
   else if(pos < 0 + 40)
 	pos = 40;
@@ -60,37 +60,22 @@ function touchEnd(){
 }
 
 function updateSpeed(prev, curr, position){
-  if(Math.abs(prev - curr) > 40){
+  if(Math.abs(prev - curr) > 5){
 	//sendDrive( null, Math.floor(curr));
 	gear.style.left = position -25 + 'px';
     return Math.floor(curr);
   }else{
-	gear.style.left = position -25 + 'px';
+	//gear.style.left = position -25 + 'px';
     return prev;
   }
 }
 
-function sendDrive(angle, velocity){
-  //send data via channel using message function in main.js
-  //message should be of type ArrayUint8 : [ angle, speed ]
-  //Uncomment when using the webrtc, comment when using direct ble access : bleorien.html
-  /*
-  if(angle === null){ // if it has been called due to change of speed value
-    message(new Uint8Array( [ alpha , velocity ] ));
-  }else{ // has been called due to change in orientation
-	message(new Uint8Array( [angle, speed] ));
-  }	
-  */
-  
-  //comment out when using the webrtc, uncomment when using direct ble access : bleorien.html
+function sendDrive(){
   if(!busy){
-    if(angle === null ){ // if it has been called due to change of speed value
-      sendCommand(new Uint8Array( [ alpha , velocity ] ));
-    }else if(angle != null){ // has been called due to change in orientation
-	  sendCommand(new Uint8Array( [angle, speed] ));
-    }	
+	sendCommand(new Uint8Array( [alpha, speed] ));	
   }
-  
 }
+
+window.setInterval(sendDrive, 500);
 
 
