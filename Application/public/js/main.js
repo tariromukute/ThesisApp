@@ -365,11 +365,11 @@ function changeScreen(){
 
 testButton = document.querySelector('#test-button');
 testButton.addEventListener('click', function(){
-    
+   var dataRateDC = document.querySelector('#dataRateDC');
    for(i = 0; i < 10; i++){
 	  setInterval(function(){
 		message(i);  
-	  }, 3000);
+	  }, dataRateDC);
   }
 });
 
