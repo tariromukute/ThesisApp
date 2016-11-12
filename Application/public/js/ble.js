@@ -134,7 +134,7 @@ function setUserType(type){
   else if(type === SENDER){
 	document.querySelector('#the-button').display = 'none';
 	document.querySelector('#send-button').display = 'none';
-	document.querySelector('#geardiv').display = 'none';
+	//document.querySelector('#geardiv').display = 'none';
   }
   
 }
