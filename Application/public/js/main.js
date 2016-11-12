@@ -363,7 +363,7 @@ function changeScreen(){
   document.querySelector('#communication').className = "show_element";
 }
 
-testButton = document.querySelector('#test-button');
+testButton = document.querySelector('#testDC-button');
 testButton.addEventListener('click', function(){
    var dataRateDC = document.querySelector('#dataRateDC');
    for(i = 0; i < 10; i++){
