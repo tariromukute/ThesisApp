@@ -70,7 +70,6 @@ bluetoothButton.addEventListener('click', function(){
   .then(characteristic => {
 	console.log("Found write characteristic");
 	writeCharacteristic = characteristic;
-    testWrite();
 		
 	return chosenService.getCharacteristic('c97433f1-be8f-4dc8-b6f0-5343e6100eb4');
   })
@@ -108,13 +107,17 @@ function testWrite(){
   
 }
 
-sendButton = document.querySelector('#send-button');
-sendButton.addEventListener('click', function(){
+testBTButton = document.querySelector('#testBT-button');
+testBTButton.addEventListener('click', function(){
    //c++
    //const cmd = new Uint8Array([c]);
-   //sendCommand(cmd);  
+   //sendCommand(cmd); 
+   var dataRateBT = document.querySelector('#dataRateBT');   
    for(i = 0; i < 10; i++){
-	  setInterval(testWrite(), 3000);
+	  setInterval(function(){
+		const cmd = new Uint8Array([i, i]);
+        sendCommand(cmd); 
+	  }, dataRateBT);
   }
 });
 
