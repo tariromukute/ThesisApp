@@ -316,7 +316,7 @@ function onDataChannel(event){
 }
 
 function onDataChannelMessage(event){
-    console.log("Received message : ");
+    console.log("Received message : " + );
     //dataChannelDisplay.value = event.data;
 	//send drive commands via ble.js sendCommand function
 	//if(!busy){
